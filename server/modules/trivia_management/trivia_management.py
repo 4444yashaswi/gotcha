@@ -25,14 +25,12 @@ def create_room(request: Request, room_data: schemas.RoomData):
     try:
             rooms = db["rooms"]
             # Insert the room data into MongoDB
-            print("1")
             room = models.Room(
                 id=room_data.roomId,
                 rounds=room_data.rounds,
                 name=room_data.name,
                 trivia_list=[]
             ).model_dump()
-            print("2")
             result = rooms.insert_one(room)
             return {"id": str(result.inserted_id)}
     
