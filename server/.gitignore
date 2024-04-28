@@ -1,2 +1,11 @@
 # virtual environment
 venv/
+
+# dotenv
+*.env
+
+# pycache
+*__pycache__/
+
+# Log file
+app.log
