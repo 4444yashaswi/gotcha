@@ -1,2 +1,8 @@
 # virtual environment
 venv/
+
+# dotenv
+*.env
+
+# pycache
+# *__pycache__/
