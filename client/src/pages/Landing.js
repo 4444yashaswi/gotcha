@@ -1,11 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"
 import CommonButton from "../Components/UI/CommonButton";
 import DetailsForm from "../Components/DetailsForm/DetailsForm";
+import axios from "../Axios/Axios";
+import Loader from "../Components/UI/Loader";
 
 const Landing = () => {
   const [avatarInitial, setAvatarInitial] = useState("");
   const [isError, setIsError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [roomDetails, setRoomDetails] = useState();
+  const [bgColor, setBgColor] = useState("aqua");
+  const [isAdmin, setIsAdmin] = useState();
 
   const navigate = useNavigate();
 
@@ -19,11 +25,18 @@ const Landing = () => {
     }
   };
 
+  const getLobbyId = async () => {
+    setIsLoading(true);
+    const getRoomDetails = await axios.get(`/triviaManagement/hit?name=${avatarInitial}`);
+    setRoomDetails(getRoomDetails);
+  }
+
   const joinGameHandler = () => {
     let isValid = inputCheck();
     if (isValid) {
-      console.log(avatarInitial + "Proceed to Join a game");
-      navigate('/lobby');
+      setIsAdmin(true);
+      console.log(avatarInitial + " Proceed to Join a game");
+      getLobbyId();
     } else {
       console.log("Error occured while trying to join a game");
     }
@@ -39,8 +52,23 @@ const Landing = () => {
     }
   };
 
+  useEffect(() => {
+    if (roomDetails) {
+      setIsLoading(false);
+      navigate(`/lobby/${roomDetails?.data?.roomId}/${avatarInitial}/${bgColor}/${isAdmin}`);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [roomDetails]);
+
+  useEffect(() => {
+    return () => {
+      setRoomDetails(null);
+    }
+  },[]);
+
   return (
     <div className="landing-page--container">
+      {isLoading && <Loader />}
       <div className="landing-page--bg-container" />'
       <div className="landing-page--body-container">
         <div className="landing-page--header">GOTCHA!</div>
@@ -50,6 +78,8 @@ const Landing = () => {
             setAvatarInitial={setAvatarInitial}
             isError={isError}
             setIsError={setIsError}
+            bgColor={bgColor}
+            setBgColor={setBgColor}
           />
         </div>
         <div className="landing-page--btns-container">

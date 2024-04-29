@@ -9,7 +9,7 @@ function App() {
     <div>
       <Routes>
         <Route exact path="/landing" element={<Landing />} />
-        <Route exact path="/lobby" element={<Lobby />} />
+        <Route exact path="/lobby/:roomId/:name/:avatarColor/:isAdmin" element={<Lobby />} />
         <Route exact path="*" element={<PageNotFound/>} />
       </Routes>
     </div>

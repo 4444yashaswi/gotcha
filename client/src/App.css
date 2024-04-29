@@ -86,7 +86,7 @@
   background-color: #ECF5FA;
   left: 3vh;
   border-radius: 50%;
-  font-size: 3vh;
+  font-size: 4.4vh;
   font-weight: 900;
   color: #98AEC4;
 }
@@ -130,7 +130,7 @@
   width: 6vh;
   background-color: #FFFFFF;
   border-radius: 100%;
-  font-size: 5vh;
+  font-size: 4.4vh;
   font-weight: 600;
 }
 
@@ -154,6 +154,7 @@
 
 .lobby-footer--rounds-container {
   margin: 1.5vh;
+  min-height: 12vh;
 }
 
 .lobby-footer--rounds-label {

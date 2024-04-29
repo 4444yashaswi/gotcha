@@ -14,7 +14,7 @@ const PlayerCard = ({ name, avatarColor, isReady }) => {
         <div
           className="player-card--avatar-is-ready"
           style={
-            isReady ? { backgroundColor: "green" } : { backgroundColor: "gray" }
+            isReady ? { backgroundColor: "greenyellow" } : { backgroundColor: "lightslategray" }
           }
         />
       </div>

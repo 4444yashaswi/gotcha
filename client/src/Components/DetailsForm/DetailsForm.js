@@ -6,11 +6,12 @@ const LandingForm = ({
   setIsError,
   avatarInitial,
   setAvatarInitial,
+  bgColor,
+  setBgColor
 }) => {
-  const [bgColor, setBgColor] = useState("aqua");
   const [colorIndex, setColorIndex] = useState(0);
 
-  const colorsArr = ["aqua", "lightgreen", "pink", "yellow"];
+  const colorsArr = ["aqua", "lightgreen", "purple", "pink", "yellowgreen", "blue" , "orange"];
 
   const switchColor = () => {
     setColorIndex((colorIndex + 1) % colorsArr.length);

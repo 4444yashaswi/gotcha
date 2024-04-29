@@ -1,14 +1,22 @@
 import React from "react";
 import "./CommonButton.css";
 
-const CommonButton = ({ isPrimary, functionality, children, style }) => {
+const CommonButton = ({
+  isPrimary,
+  isDisabled,
+  functionality,
+  children,
+  style,
+}) => {
   return (
     <div
       className={
         isPrimary ? "btn-container--primary" : "btn-container--secondary"
       }
-      style={style}
-      onClick={functionality}
+      style={isDisabled ? { ...style, cursor: "not-allowed" } : { ...style }}
+      onClick={() => {
+        if (!isDisabled) functionality();
+      }}
     >
       <div
         className={isPrimary ? "btn-border--primary" : "btn-border--secondary"}
