@@ -4,7 +4,7 @@ import CommonButton from "../Components/UI/CommonButton";
 import DetailsForm from "../Components/DetailsForm/DetailsForm";
 
 const Landing = () => {
-  const [avatarInitial, setAvatarInitial] = useState();
+  const [avatarInitial, setAvatarInitial] = useState("");
   const [isError, setIsError] = useState(false);
 
   const navigate = useNavigate();

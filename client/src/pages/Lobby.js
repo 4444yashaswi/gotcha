@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import CommonButton from "../Components/UI/CommonButton";
 import PlayerCard from "../Components/UI/PlayerCard";
+import Modal from "../Components/UI/Modal";
+import { useNavigate } from "react-router-dom";
 
 const Lobby = () => {
   const players = [
@@ -17,16 +19,32 @@ const Lobby = () => {
   const roundsList = ["5", "7", "10", "15"];
 
   const [noOfRounds, setNoOfRounds] = useState("5");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   const roundsClickHandler = (round) => {
     setNoOfRounds(round);
   };
 
+  const backButtonFunctionality = () => {
+    navigate("/landing");
+  };
+
+  const backClickHandler = () => {
+    setIsModalOpen(true);
+  };
+
+  const onModalClose = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="lobby-container">
+      {isModalOpen && <Modal title="Are you sure you want to leave the game?" onClose={onModalClose} functionality={backButtonFunctionality}/>}
       <div className="lobby-background" />
       <div className="lobby-header">
-        <div className="lobby-header--back-button">{"<"}</div>
+        <div className="lobby-header--back-button" onClick={backClickHandler}>{"<"}</div>
         <div className="lobby-header--heading">Lobby</div>
         <div /> {/*place holder div*/}
       </div>

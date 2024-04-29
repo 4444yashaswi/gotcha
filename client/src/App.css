@@ -179,6 +179,7 @@
   font-weight: 700;
   padding: 0.1vw 7vw 0.1vw 7vw;
   border-radius: 3.5vh;
+  transition: 500ms;
 }
 
 .lobby-footer--rounds-option-active {
