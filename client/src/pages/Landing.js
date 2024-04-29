@@ -1,10 +1,13 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"
 import CommonButton from "../Components/UI/CommonButton";
 import DetailsForm from "../Components/DetailsForm/DetailsForm";
 
 const Landing = () => {
   const [avatarInitial, setAvatarInitial] = useState();
   const [isError, setIsError] = useState(false);
+
+  const navigate = useNavigate();
 
   const inputCheck = () => {
     if (avatarInitial?.length && avatarInitial.length !== 0) {
@@ -20,6 +23,7 @@ const Landing = () => {
     let isValid = inputCheck();
     if (isValid) {
       console.log(avatarInitial + "Proceed to Join a game");
+      navigate('/lobby');
     } else {
       console.log("Error occured while trying to join a game");
     }
@@ -29,6 +33,7 @@ const Landing = () => {
     let isValid = inputCheck();
     if (isValid) {
       console.log(avatarInitial + "Proceed to Start a game");
+      navigate('/lobby');
     } else {
       console.log("Error occured while trying to Start a game");
     }

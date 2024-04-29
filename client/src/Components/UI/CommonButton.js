@@ -1,12 +1,13 @@
 import React from "react";
 import "./CommonButton.css";
 
-const CommonButton = ({ isPrimary, functionality, children }) => {
+const CommonButton = ({ isPrimary, functionality, children, style }) => {
   return (
     <div
       className={
         isPrimary ? "btn-container--primary" : "btn-container--secondary"
       }
+      style={style}
       onClick={functionality}
     >
       <div
