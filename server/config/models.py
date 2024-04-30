@@ -22,7 +22,7 @@ class Answer(BaseModel):
 class User(BaseModel):
     name: str   # from frontend
     avatar_colour: str  # required fields from frontend
-    score: int  # update after every round
+    score: int = 0  # update after every round
     is_ready: bool = False  # flag at the start of game
     has_submitted: bool = False # flag for every round's answer submission
     has_selected: bool = False  # flag for every round's vote
@@ -41,5 +41,5 @@ class Room(BaseModel):
     user_list: List[User] = []  # addition allowed before starting game
     trivia_list: List[TriviaListElement] = []   # Retrieve based on number of rounds before starting game
     trivia_associated_users: List[str] = [] # with every round, send list of people who the question is associated to
-    is_running: bool    # flag for initial room settlement
+    is_running: bool = False    # flag for initial room settlement
 
