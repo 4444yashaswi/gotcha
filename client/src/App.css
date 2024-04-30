@@ -53,6 +53,148 @@
 }
 
 
+
+.lobby-container {
+  background-color: #3471B0;
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  text-align: center;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.lobby-background {
+  position: absolute;
+  top: 17vh;
+  background-color: #FFFFFF;
+  height: 78vh;
+  width: 100vw;
+  border-radius: 10vw 10vw 0 0;
+  z-index: -1;
+}
+
+.lobby-header {
+  margin-top: 11.5vh;
+  position: relative;
+}
+
+.lobby-header--back-button {
+  position: absolute;
+  height: 5vh;
+  width: 5vh;
+  background-color: #ECF5FA;
+  left: 3vh;
+  border-radius: 50%;
+  font-size: 4.4vh;
+  font-weight: 900;
+  color: #98AEC4;
+}
+
+.lobby-header--heading {
+  color: #FFFFFF;
+  font-size: 3.5vh;
+  font-weight: 500;
+}
+
+.lobby-body {
+  margin-top: 3vh;
+}
+
+.lobby-body--join-text {
+  font-size: 1.5vh;
+  font-weight: 600;
+  color: #47586C;
+}
+
+.lobby-body--code-container {
+  color: #2AA6E4;
+  background-color: #E8EFF5;
+  margin: auto;
+  margin-top: 2.2vh;
+  height: 8.2vh;
+  width: 93%;
+  border-radius: 4.1vh;
+}
+
+.lobby-body--code {
+  font-weight: 600;
+  font-size: 5vh;
+}
+
+.lobby-body--code-share-btn {
+  position: absolute;
+  right: 5vw;
+  top: 24.5vh;
+  height: 6vh;
+  width: 6vh;
+  background-color: #FFFFFF;
+  border-radius: 100%;
+  font-size: 4.4vh;
+  font-weight: 600;
+}
+
+.lobby-body--waiting {
+  margin-top: 2vh;
+  font-size: 2vh;
+  font-weight: 700;
+  color: #47586C;
+}
+
+.lobby-player--container {
+  background-color: white;
+  height: 33vh;
+  width: 100%;
+}
+
+.lobby-footer--container {
+  margin-top: 2vh;
+  border-top: 3px solid #E7F0F6;
+}
+
+.lobby-footer--rounds-container {
+  margin: 1.5vh;
+  min-height: 12vh;
+}
+
+.lobby-footer--rounds-label {
+  font-size: 2.2vh;
+  font-weight: 600;
+  color: #47586C;
+}
+
+.lobby-footer--rounds-slider {
+  background-color: #E8EFF5;
+  margin: auto;
+  margin-top: 3.5vh;
+  height: 5vh;
+  width: 98%;
+  border-radius: 2.5vh;
+  display: flex;
+  justify-content: space-between;
+}
+
+.lobby-footer--rounds-option {
+  color: #2AA6E4;
+  font-size: 3vh;
+  font-weight: 700;
+  padding: 0.1vw 7vw 0.1vw 7vw;
+  border-radius: 3.5vh;
+  transition: 500ms;
+}
+
+.lobby-footer--rounds-option-active {
+  box-shadow: 0px 1px 0px 0px rgb(116,145,180);  
+  background-color: #ffffff;
+}
+
+.lobby-player--container {
+  display: flex;
+  flex-wrap: wrap;
+  height: 33vh;
+  overflow: scroll;
+}
+
 .triangle {
   width: 0;
   height: 0;
