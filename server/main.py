@@ -3,6 +3,7 @@ import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 
 from modules.trivia_management import main as main_trivia_management
+from modules.master_management import main as main_master_management
 
 from config.config import Constants
 from config.config import settings
@@ -27,6 +28,7 @@ async def amialive():
     return "gotcha-backend is up and running"
 
 app.include_router(main_trivia_management.router)
+app.include_router(main_master_management.router)
 
 if __name__ == "__main__":
     print(settings.title)

@@ -15,3 +15,4 @@ settings = DevelopmentSettings()
 class Constants:
     DEFAULT_PORT = 8000
     TRIVIA_MANAGEMENT = "triviaManagement"
+    MASTER_MANAGEMENT = "masterManagement"
