@@ -1,10 +1,11 @@
+import random
 from fastapi import APIRouter, Header, HTTPException, status, Request, File, Query
 from fastapi.params import Depends
 import logging
 
 from config.config import Constants
 from config.config import settings
-from config.database import db
+from config.database import get_db
 from config import models
 from . import schemas
 
@@ -15,24 +16,81 @@ router = APIRouter(
 
 logger = logging.getLogger(__name__)
 
+# Dummy API
+@router.get("/hit")
+def dummy_api(request: Request, name: str):
+     try:
+          response = {"detail": f"Hello {name}", "roomId": "code chef"}
+          return response
+     
+     except Exception as e:
+          logger.error(f"Error while dummy API hit: {str(e)}")
+          raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Something went wrong!")
+
 # API to join a room
 
 
 
 # API to create & join a room
+def generate_user_object(user_name, avatar_colour):
+    user_object = models.User(
+         name=user_name,
+         avatar_colour=avatar_colour
+    )
+    return user_object
+
+
+def generate_random_trivia_questions_list(rounds, db):
+    trivia_db = db["trivias"]
+    
+    # Create an aggregation pipeline with the $sample stage
+    pipeline = [{"$sample": {"size": rounds}}]
+
+    # Execute the aggregation pipeline
+    random_trivia = list(trivia_db.aggregate(pipeline))
+
+    trivia_list = [models.TriviaListElement(
+        round_number= i+1,
+        trivia=trivia["question_template"]
+    ) for i, trivia in enumerate(random_trivia)]
+
+    return trivia_list
+
+
 @router.post("/createRoom")
-def create_room(request: Request, room_data: schemas.RoomData):
+def create_room(request: Request, room_data: schemas.RoomData, db = Depends(get_db)):
     try:
-            rooms = db["rooms"]
-            # Insert the room data into MongoDB
+            rooms_db = db["rooms"]
+            
+            # get unique room name
+            random_name = f"{random.choice(Constants.FOUR_LETTER_WORDS)} {random.choice(Constants.FOUR_LETTER_WORDS)}"
+            while rooms_db.find_one({"id": random_name}) is not None: 
+                random_name = f"{random.choice(Constants.FOUR_LETTER_WORDS)} {random.choice(Constants.FOUR_LETTER_WORDS)}"
+            
+            user = generate_user_object(user_name=room_data.userName, avatar_colour=room_data.avatarColour)
+            trivia_list = generate_random_trivia_questions_list(rounds=room_data.rounds, db=db)
+
             room = models.Room(
-                id=room_data.roomId,
+                id=random_name,
+                admin=room_data.userName,
                 rounds=room_data.rounds,
-                name=room_data.name,
-                trivia_list=[]
+                user_list=[user],
+                trivia_list=trivia_list,
+                trivia_associated_users=[]
             ).model_dump()
-            result = rooms.insert_one(room)
-            return {"id": str(result.inserted_id)}
+
+            
+            # result = rooms_db.insert_one(room)
+            # return {"id": str(result.inserted_id)}
+            result = rooms_db.insert_one(room)
+            
+            response = {
+                "detail": "Room created",
+                "roomId": random_name
+            }
+
+            return response
+
     
     except HTTPException as e:
         logger.error(f"Error while  creating room: {str(e)}")

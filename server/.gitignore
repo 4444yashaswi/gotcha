@@ -9,3 +9,6 @@ venv/
 
 # Log file
 app.log
+
+# config files
+*trivia_entries.py

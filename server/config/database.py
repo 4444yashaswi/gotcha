@@ -1,5 +1,11 @@
 from pymongo import MongoClient
 from config.config import settings
 
-client = MongoClient(host=settings.db_uri) #, port=settings.port)
-db = client[settings.db_name]
+def get_db():
+    try:
+        client = MongoClient(host=settings.db_uri)
+        db = client[settings.db_name]
+
+        yield db
+    finally:
+        client.close()
