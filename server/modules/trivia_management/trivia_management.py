@@ -20,34 +20,81 @@ logger = logging.getLogger(__name__)
 @router.get("/hit")
 def dummy_api(request: Request, name: str):
      try:
-          response = {"detail": f"Hello {name}", "roomId": "code chef"}
-          return response
+        response = {"detail": f"Hello {name}", "roomId": "code chef"}
+        return response
      
      except Exception as e:
-          logger.error(f"Error while dummy API hit: {str(e)}")
-          raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Something went wrong!")
+        logger.error(f"Error while dummy API hit: {str(e)}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Something went wrong!")
 
-# API to join a room
 
 
 
 # API to create & join a room
 def generate_user_object(user_name, avatar_colour):
     user_object = models.User(
-         name=user_name,
-         avatar_colour=avatar_colour
+        name=user_name,
+        avatar_colour=avatar_colour
     )
     return user_object
 
 
+
+# API to join a room
+@router.post("/joinRoom")
+def join_room(request: Request, room_data: schemas.JoinRoomData, db = Depends(get_db)):
+    try:
+        rooms_db = db["rooms"]
+
+        room = rooms_db.find_one({"id": room_data.roomId})
+        
+        if room is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Room not found with id: {room_data.roomId}")
+        
+        
+        user_list = [{
+            "name": user["name"],
+            "avatarColor": user["avatar_colour"],
+            "isReady": user["is_ready"]
+        } for user in room["user_list"]]
+
+        for user in user_list:
+            if user["name"] == room_data.userName:
+                raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Duplicate name")
+
+        response = {
+            "detail": "Room details fetched successfully",
+            "roomId": room_data.roomId,
+            "playersList": user_list
+        }
+        
+        user = generate_user_object(user_name=room_data.userName, avatar_colour=room_data.avatarColour).model_dump()
+        
+        new_user_list = room["user_list"]
+        new_user_list.append(user)
+        
+        rooms_db.update_one({"id": room["id"]}, {"$set": {"user_list": new_user_list}})
+        
+        return response
+    
+    except HTTPException as e:
+        logger.error(f"Error while  creating room: {str(e)}")
+        raise HTTPException(status_code=e.status_code, detail=e.detail)
+    
+    except Exception as e:
+        logger.error(f"Error while  creating room: {str(e)}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Something went wrong!")
+
+
+
 def generate_random_trivia_questions_list(rounds, db):
-    trivia_db = db["trivias"]
+    trivias_db = db["trivias"]
     
     # Create an aggregation pipeline with the $sample stage
     pipeline = [{"$sample": {"size": rounds}}]
 
     # Execute the aggregation pipeline
-    random_trivia = list(trivia_db.aggregate(pipeline))
+    random_trivia = list(trivias_db.aggregate(pipeline))
 
     trivia_list = [models.TriviaListElement(
         round_number= i+1,
@@ -58,7 +105,7 @@ def generate_random_trivia_questions_list(rounds, db):
 
 
 @router.post("/createRoom")
-def create_room(request: Request, room_data: schemas.RoomData, db = Depends(get_db)):
+def create_room(request: Request, room_data: schemas.CreateRoomData, db = Depends(get_db)):
     try:
             rooms_db = db["rooms"]
             
