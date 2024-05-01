@@ -25,18 +25,26 @@ const Landing = () => {
     }
   };
 
-  const getLobbyId = async () => {
+  const joinExistingRoom = async () => {
+    setIsLoading(false);
+    const joinRoomBody = {userName: avatarInitial, avatarColour: bgColor, roomId: "cake clog"};
+    const getRoomDetails = await axios.get('/triviaManagement/joinRoom', {...joinRoomBody});
+    setRoomDetails(getRoomDetails);
+  }
+
+  const startNewRoom = async () => {
     setIsLoading(true);
-    const getRoomDetails = await axios.get(`/triviaManagement/hit?name=${avatarInitial}`);
+    const newRoomBody = {userName: avatarInitial, avatarColour: bgColor, rounds: 5};
+    const getRoomDetails = await axios.post('/triviaManagement/createRoom', {...newRoomBody});
     setRoomDetails(getRoomDetails);
   }
 
   const joinGameHandler = () => {
     let isValid = inputCheck();
     if (isValid) {
-      setIsAdmin(true);
+      setIsAdmin(false);
       console.log(avatarInitial + " Proceed to Join a game");
-      getLobbyId();
+      joinExistingRoom(); //join the room id provided!!!!
     } else {
       console.log("Error occured while trying to join a game");
     }
@@ -45,8 +53,9 @@ const Landing = () => {
   const startGameHandler = () => {
     let isValid = inputCheck();
     if (isValid) {
-      console.log(avatarInitial + "Proceed to Start a game");
-      navigate('/lobby');
+      setIsAdmin(true);
+      console.log(avatarInitial + " Proceed to Start a game");
+      startNewRoom();
     } else {
       console.log("Error occured while trying to Start a game");
     }
@@ -55,7 +64,8 @@ const Landing = () => {
   useEffect(() => {
     if (roomDetails) {
       setIsLoading(false);
-      navigate(`/lobby/${roomDetails?.data?.roomId}/${avatarInitial}/${bgColor}/${isAdmin}`);
+      const existingPlayers = roomDetails?.data?.playersList || [];
+      navigate(`/lobby/${roomDetails?.data?.roomId}/${avatarInitial}/${bgColor}/${isAdmin}`, {state: existingPlayers});
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomDetails]);

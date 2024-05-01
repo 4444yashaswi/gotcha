@@ -20,7 +20,9 @@
     font-size: 7.2vh;
     font-weight: 500;
     color: rgba(255, 255, 255, 0.8);
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .player-card--avatar-is-ready {
