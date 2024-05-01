@@ -8,12 +8,23 @@ const CommonButton = ({
   children,
   style,
 }) => {
+  const disabledStyle = {
+    true: {
+      cursor: "not-allowed",
+      backgroundColor: "#93C5DE",
+      boxShadow: "0px 5px 0px 0px rgb(146,184,207)",
+    },
+    false: { cursor: "not-allowed" },
+  };
+
   return (
     <div
       className={
         isPrimary ? "btn-container--primary" : "btn-container--secondary"
       }
-      style={isDisabled ? { ...style, cursor: "not-allowed" } : { ...style }}
+      style={
+        isDisabled ? { ...style, ...disabledStyle?.[isPrimary] } : { ...style }
+      }
       onClick={() => {
         if (!isDisabled) functionality();
       }}

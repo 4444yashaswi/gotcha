@@ -25,12 +25,12 @@ const Landing = () => {
     }
   };
 
-  const joinExistingRoom = async () => {
-    setIsLoading(false);
-    const joinRoomBody = {userName: avatarInitial, avatarColour: bgColor, roomId: "cake clog"};
-    const getRoomDetails = await axios.get('/triviaManagement/joinRoom', {...joinRoomBody});
-    setRoomDetails(getRoomDetails);
-  }
+  // const joinExistingRoom = async () => {
+  //   setIsLoading(false);
+  //   const joinRoomBody = {userName: avatarInitial, avatarColour: bgColor, roomId: "cake clog"};
+  //   const getRoomDetails = await axios.get('/triviaManagement/joinRoom', {...joinRoomBody});
+  //   setRoomDetails(getRoomDetails);
+  // }
 
   const startNewRoom = async () => {
     setIsLoading(true);
@@ -42,9 +42,12 @@ const Landing = () => {
   const joinGameHandler = () => {
     let isValid = inputCheck();
     if (isValid) {
-      setIsAdmin(false);
-      console.log(avatarInitial + " Proceed to Join a game");
-      joinExistingRoom(); //join the room id provided!!!!
+
+      // setIsAdmin(false);
+      // console.log(avatarInitial + " Proceed to Join a game");
+      // joinExistingRoom(); //join the room id provided!!!!
+    
+      navigate(`/join-room/${avatarInitial}/${bgColor}`)
     } else {
       console.log("Error occured while trying to join a game");
     }

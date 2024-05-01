@@ -205,6 +205,134 @@
   overflow: scroll;
 }
 
+.join-container {
+  background-color: #3471B0;
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  text-align: center;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.join-background {
+  position: absolute;
+  top: 12.6vh;
+  background-color: #FFFFFF;
+  height: 87.6vh;
+  width: 100vw;
+  border-radius: 10vw 10vw 0 0;
+  z-index: -1;
+}
+
+.join-header {
+  position: relative;
+  margin-top: 7vh;
+  width: 100%;
+  height: 5vh;
+}
+
+.join-header--back-button {
+  position: absolute;
+  top: 0;
+  left: 5vw;
+  height: 5vh;
+  width: 5vh;
+  border-radius: 50%;
+  background-color: #ECF5FA;
+  font-size: 4.4vh;
+  font-weight: 900;
+  color: #98AEC4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.join-header--title {
+  color: #FFFFFF;
+  font-size: 3vh;
+  font-weight: 500;
+}
+
+.join-body--container {
+  margin-top: 5vh;
+}
+
+.join-body--prompt {
+  box-shadow: 0px 3px 0px 0px rgb(232,239,245);
+  padding: 2.5vh 8vw 1.5vh 8vw;
+  color: #869CB4;
+  font-weight: 600;
+}
+
+.join-body--room-id-container {
+  text-align: center;
+  position: relative;
+  margin-top: 10vh;
+  height: 22vh;
+  /* background-color: green; */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.join-body--room-id-input {
+  position: absolute;
+
+  width: 100%;
+  color: transparent;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  caret-color: transparent;
+
+  height: 7vh;
+  /* background-color: pink; */
+  background: transparent;
+  border: none;
+  z-index: 2;
+}
+
+input:focus-visible {
+  outline-offset: 0px;
+  border: none;
+}
+
+.join-body--room-display-container {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 7vh;
+  /* background-color: pink; */
+  /* padding: 0 5vw 0 5vw; */
+}
+
+.join-room--display-element {
+  height: 6.5vh;
+  width: 4.8vh;
+  border-radius: 5px;
+  background-color: #BBCDE1;
+  margin: 0 2px 0 2px;
+  color: #FFFFFF;
+  font-size: 4.5vh;
+  font-weight: 600; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.join-room--display-space {
+  width: 9px;
+  height: 5vh;
+  /* background-color: #3c06ff; */
+}
+
+.join-body--submit-btn-container {
+    display: flex;
+    justify-content: center;
+}
+
 .triangle {
   width: 0;
   height: 0;
