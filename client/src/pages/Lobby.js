@@ -2,22 +2,24 @@ import React, { useEffect, useState } from "react";
 import CommonButton from "../Components/UI/CommonButton";
 import PlayerCard from "../Components/UI/PlayerCard";
 import Modal from "../Components/UI/Modal";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 // import axios from "../Axios/Axios";
 import { MdIosShare } from "react-icons/md";
 import { IoIosArrowBack } from "react-icons/io";
 
 const Lobby = () => {
-  const playerList = [
-    { name: "OJ", avatarColor: "blue", isReady: true },
-    { name: "Tera Baap", avatarColor: "orange", isReady: true },
-    { name: "Yashaswi", avatarColor: "lightgreen", isReady: false },
-    { name: "Tosh :)", avatarColor: "pink", isReady: true },
-    { name: "Singh", avatarColor: "purple", isReady: false },
-    { name: "Ohm", avatarColor: "yellowgreen", isReady: true },
-    { name: "Goyal", avatarColor: "pink", isReady: true },
-    { name: "Omar", avatarColor: "orange", isReady: true },
-  ];
+  // const playerList = [
+  //   { name: "OJ", avatarColor: "blue", isReady: true },
+  //   { name: "Tera Baap", avatarColor: "orange", isReady: true },
+  //   { name: "Yashaswi", avatarColor: "lightgreen", isReady: false },
+  //   { name: "Tosh :)", avatarColor: "pink", isReady: true },
+  //   { name: "Singh", avatarColor: "purple", isReady: false },
+  //   { name: "Ohm", avatarColor: "yellowgreen", isReady: true },
+  //   { name: "Goyal", avatarColor: "pink", isReady: true },
+  //   { name: "Omar", avatarColor: "orange", isReady: true },
+  // ];
+  
+  const playerList = useLocation().state;
 
   const roundsList = ["5", "7", "10", "15"];
 
@@ -108,7 +110,7 @@ const Lobby = () => {
       </div>{" "}
       <div className="lobby-footer--container">
         <div className="lobby-footer--rounds-container">
-          {isAdmin && (
+          {isAdmin === "true" && (
             <>
               <div className="lobby-footer--rounds-label">Number of rounds</div>
               <div className="lobby-footer--rounds-slider">

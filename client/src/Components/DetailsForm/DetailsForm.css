@@ -16,6 +16,9 @@
     font-size: 12vh;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .details-form--name-container {
@@ -40,6 +43,6 @@
     font-size: large;
 }
 
-.details-form--input-field:focus {
-    border-color: #34B1F3;
+.details-form--input-field:focus-visible {
+    border-color: #34B1F3 !important;
 }

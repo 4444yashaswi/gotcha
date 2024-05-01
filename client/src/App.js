@@ -8,6 +8,7 @@ function App() {
   return (
     <div>
       <Routes>
+        <Route exact path="/" element={<Landing />} />
         <Route exact path="/landing" element={<Landing />} />
         <Route exact path="/lobby/:roomId/:name/:avatarColor/:isAdmin" element={<Lobby />} />
         <Route exact path="*" element={<PageNotFound/>} />
