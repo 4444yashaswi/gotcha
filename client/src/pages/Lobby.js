@@ -19,13 +19,14 @@ const Lobby = () => {
   //   { name: "Omar", avatarColor: "orange", isReady: true },
   // ];
   
-  const playerList = useLocation().state;
+  const playerList = useLocation().state || [];
 
   const roundsList = ["5", "7", "10", "15"];
 
   const [noOfRounds, setNoOfRounds] = useState("5");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isReady, setIsReady] = useState(false);
+  const [isAllReady, setIsAllReady] = useState(false);
   const [players, setPlayers] = useState([]);
 
   const navigate = useNavigate();
@@ -67,6 +68,23 @@ const Lobby = () => {
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady]);
+
+  useEffect(() => {
+    let isTempAllReady = true;
+    players.map(({ isReady }) => isTempAllReady = isTempAllReady && isReady);
+    setIsAllReady(isTempAllReady);
+  }, [players]);
+
+  useEffect(() => {
+    const readyTimeOut = setTimeout(() => {
+      if (isAllReady)
+        console.log("all are ready");
+    }, 5000);
+
+    return () => {
+      clearTimeout(readyTimeOut);
+    }
+  }, [isAllReady]);
 
   return (
     <div className="lobby-container">

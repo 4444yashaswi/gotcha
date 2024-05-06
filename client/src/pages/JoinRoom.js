@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"; // useEffect,
+import React, { useEffect, useRef, useState } from "react"; // useEffect,
 import { IoIosArrowBack } from "react-icons/io";
 import { useNavigate, useParams } from "react-router-dom";
 import CommonButton from "../Components/UI/CommonButton";
@@ -7,6 +7,8 @@ import Loader from "../Components/UI/Loader";
 import Modal from "../Components/UI/Modal";
 
 const JoinRoom = () => {
+    const inputRoom = useRef();
+
   const navigate = useNavigate();
   const { name, avatarColor } = useParams();
 
@@ -49,6 +51,11 @@ const JoinRoom = () => {
       setRoomIdArr(tempRoomIdArr);
       setRoomId(event.target.value);
     }
+  };
+
+  const roomIdChangeChecker = (event) => {
+    // console.log(event?.key);
+    if (!/^[a-zA-Z]+$/.test(event?.key)) event.preventDefault();
   };
 
   const joinExistingRoom = async () => {
@@ -96,6 +103,8 @@ const JoinRoom = () => {
   }, [roomDetails]);
 
   useEffect(() => {
+    inputRoom.current.focus();
+
     return () => {
       setRoomDetails(null);
     };
@@ -127,9 +136,10 @@ const JoinRoom = () => {
           <input
             className="join-body--room-id-input"
             // placeholder="input"
+            ref={inputRoom}
             value={roomId}
             onChange={roomIdChangeHandler}
-            // onKeyDown={roomIdChangeChecker}
+            onKeyDown={roomIdChangeChecker}
           />
           <div className="join-body--room-display-container">
             {roomIdArr.map((character, index) => (
@@ -151,7 +161,6 @@ const JoinRoom = () => {
           </div>
         </div>
       </div>
-      JoinRoom {name} {avatarColor}
     </div>
   );
 };

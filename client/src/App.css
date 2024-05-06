@@ -291,6 +291,10 @@
   background: transparent;
   border: none;
   z-index: 2;
+
+  /* pointer-events: none;
+   user-select: none; */
+   outline: none;
 }
 
 input:focus-visible {
