@@ -1,31 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import Lobby from "../pages/Lobby";
 import PageNotFound from "../pages/PageNotFound";
 import SocketConfig from "./SocketConfig";
 
 const Index = () => {
+  const [roomId, setRoomId] = useState();
+
+
   return (
     <>
+      <SocketConfig roomId={roomId} />
       <Routes>
         <Route
           exact
           path="/lobby/:roomId/:name/:avatarColor/:isAdmin"
-          element={
-            <SocketConfig>
-              <Lobby />
-            </SocketConfig>
-          }
+          element={<Lobby setRoomId={setRoomId} />}
         />
-        <Route
-          exact
-          path="*"
-          element={
-            <SocketConfig>
-              <PageNotFound />
-            </SocketConfig>
-          }
-        />
+        <Route exact path="*" element={<PageNotFound />} />
       </Routes>
     </>
   );
