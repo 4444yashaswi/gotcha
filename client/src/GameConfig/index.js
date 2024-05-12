@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import Lobby from "../pages/Lobby";
 import PageNotFound from "../pages/PageNotFound";
 import SocketConfig from "./SocketConfig";
+import SubmitAnswer from "../pages/paired pages/SubmitAnswer";
 
 const Index = () => {
   const [roomId, setRoomId] = useState();
@@ -17,6 +18,7 @@ const Index = () => {
           path="/lobby/:roomId/:name/:avatarColor/:isAdmin"
           element={<Lobby setRoomId={setRoomId} />}
         />
+        <Route exact path="/answer" element={<SubmitAnswer />} />
         <Route exact path="*" element={<PageNotFound />} />
       </Routes>
     </>

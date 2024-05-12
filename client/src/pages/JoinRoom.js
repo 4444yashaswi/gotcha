@@ -135,7 +135,7 @@ const JoinRoom = () => {
         <div className="join-body--room-id-container">
           <input
             className="join-body--room-id-input"
-            // placeholder="input"
+            spellCheck={false}
             ref={inputRoom}
             value={roomId}
             onChange={roomIdChangeHandler}
