@@ -1,55 +1,17 @@
 import React, { useRef, useState } from "react";
-import { IoMenu } from "react-icons/io5";
 import CommonButton from "../Components/UI/CommonButton";
 import Countdown from "../Components/UI/Countdown";
+import TruthHeader from "../Components/TruthComesOutComponents/TruthHeader";
+import TruthQuestion from "../Components/TruthComesOutComponents/TruthQuestion";
 
 const Answer = ({ setSubmitted }) => {
   const textAreaRef = useRef();
 
-  const UserAvatar = ({ userName, avatarColor, index }) => {
-    let styleMap;
-    if (dependentDependent.length === 1) styleMap = {};
-    else if (dependentDependent.length === 2)
-      styleMap = {
-        0: { left: "0" },
-        1: { right: "0" },
-      };
-    else
-      styleMap = {
-        0: { left: "0" },
-        1: {},
-        2: { right: "0" },
-      };
-    return (
-      <div
-        style={{
-          height: "7vh",
-          width: "7vh",
-          borderRadius: "50%",
-          boxSizing: "border-box",
-          border: "4px solid white",
-          fontSize: "3vh",
-          fontWeight: "500",
-          color: "rgba(255, 255, 255, 0.8)",
-          backgroundColor: avatarColor,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          position: "absolute",
-          top: "-18%",
-          ...styleMap[index],
-        }}
-      >
-        {userName[0]}
-      </div>
-    );
-  };
-
   const questonquestion = "If OJ became famous overnight, it would be for";
   const dependentDependent = [
     { nameName: "Ojaswi", colorColor: "pink" },
-    // { nameName: "Yashaswi", colorColor: "purple" },
-    // { nameName: "Toshit", colorColor: "black" },
+    { nameName: "Yashaswi", colorColor: "purple" },
+    { nameName: "Toshit", colorColor: "black" },
   ];
 
   const Limit = 100;
@@ -78,25 +40,11 @@ const Answer = ({ setSubmitted }) => {
 
   return (
     <div className="answer-container">
-      <div className="answer-header--container">
-        <div className="answer-header--menu">
-          <IoMenu fontSize={"3.5vh"} color="#99AFC4" />
-        </div>
-        <div className="answer-header--title">The Truth Comes Out Teaser</div>
-      </div>
-      <div className="answer-question--container">
-        <div className="answer-question--avatar-container">
-          {dependentDependent.map((player, index) => (
-            <UserAvatar
-              userName={player.nameName}
-              avatarColor={player.colorColor}
-              index={index}
-              key={index}
-            />
-          ))}
-        </div>
-        <div className="answer-question--question">{questonquestion}</div>
-      </div>
+      <TruthHeader />
+      <TruthQuestion
+        question={questonquestion}
+        dependentDependent={dependentDependent}
+      />
       <div className="answer-input--container">
         <div
           className="answer-input--text-container"

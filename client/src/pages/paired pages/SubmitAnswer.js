@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Answer from "../Answer";
+import SelectSubmit from "../SelectSubmit";
 
 const SubmitAnswer = () => {
   const [hasPlayerSubmittedAnswer, setHasPlayerSubmittedAnswer] =
@@ -7,7 +8,7 @@ const SubmitAnswer = () => {
   return (
     <>
       {hasPlayerSubmittedAnswer ? (
-        <div>Submitted the answer already</div>
+        <SelectSubmit nextScreen="/select-option" />
       ) : (
         <Answer setSubmitted={setHasPlayerSubmittedAnswer} />
       )}
