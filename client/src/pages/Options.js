@@ -12,10 +12,10 @@ const Options = ({ setSubmitted }) => {
     // { nameName: "Toshit", colorColor: "black" },
   ];
   const optionsOptions = [
-    "pot and pot only",
-    "ganja ganja",
+    "Freshly cooked sunny side up",
+    "Half fried eggs",
     "litchi juice",
-    "naughty",
+    "Stale 2 weeks old food",
   ];
 
   const optionSelectHandler = (option) => {
@@ -25,7 +25,7 @@ const Options = ({ setSubmitted }) => {
 
   return (
     <div className="options-container">
-      <TruthHeader />
+      <TruthHeader>The Truth Comes Out Teaser</TruthHeader>
       <TruthQuestion
         question={questonquestion}
         dependentDependent={dependentDependent}

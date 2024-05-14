@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import CommonButton from "../Components/UI/CommonButton";
-import PlayerCard from "../Components/UI/PlayerCard";
+import PlayerCard from "../Components/UI/PlayerDetails/PlayerCard";
 import Modal from "../Components/UI/Modal";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 // import axios from "../Axios/Axios";

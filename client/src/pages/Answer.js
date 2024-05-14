@@ -40,7 +40,7 @@ const Answer = ({ setSubmitted }) => {
 
   return (
     <div className="answer-container">
-      <TruthHeader />
+      <TruthHeader>The Truth Comes Out Teaser</TruthHeader>
       <TruthQuestion
         question={questonquestion}
         dependentDependent={dependentDependent}

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import TruthHeader from "../Components/TruthComesOutComponents/TruthHeader";
-import PlayerCard from "../Components/UI/PlayerCard";
+import PlayerCard from "../Components/UI/PlayerDetails/PlayerCard";
 
 const Submissions = ({ nextScreen }) => {
   const playerList = [
@@ -20,7 +20,7 @@ const Submissions = ({ nextScreen }) => {
 
   return (
     <div className="waiting-container">
-      <TruthHeader />
+      <TruthHeader>The Truth Comes Out Teaser</TruthHeader>
       <div className="waiting-list--container">
         <div className="waiting-list--heading">Collecting answers...</div>
         <div className="waiting-list--players-container">
