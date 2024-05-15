@@ -1,0 +1,25 @@
+.waiting-animation--container {
+    color: #ffffff;
+    font-weight: 800;
+    display: flex;
+    justify-content: center;
+}
+
+.waiting-animation--position {
+    animation: shrinkGrow 2s infinite; /* Use the animation for 2 seconds, repeat infinitely */
+    width: 9vw;
+    height: 9vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@keyframes shrinkGrow {
+    0%, 100% {
+      font-size: 3vh; /* Initial and final font size */
+    }
+    50% {
+      font-size: 1vh; /* Font size when shrunk */
+    }
+}
+  

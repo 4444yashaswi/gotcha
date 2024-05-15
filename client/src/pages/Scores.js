@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import TruthHeader from "../Components/TruthComesOutComponents/TruthHeader";
 import PlayerDetailsCard from "../Components/UI/PlayerDetails/PlayerDetailsCard";
 import PlayerScoreCard from "../Components/UI/PlayerDetails/PlayerScoreCard";
+import CommonButton from "../Components/UI/CommonButton";
+import WaitingAnimation from "../Components/UI/WaitingAnimation";
 
 const Scores = () => {
-  const playerList = [
+  const playersSelectedYourAnswerList = [
     { name: "OJ", avatarColor: "blue", isReady: true },
     { name: "Tera Baap", avatarColor: "orange", isReady: true },
     // { name: "Yashaswi", avatarColor: "lightgreen", isReady: false },
@@ -14,6 +16,47 @@ const Scores = () => {
     // { name: "Goyal", avatarColor: "pink", isReady: true },
     // { name: "Omar", avatarColor: "orange", isReady: true },
   ];
+
+  const allAnswersList = [
+    {
+      name: "Yash",
+      avatarColor: "pink",
+      answer: "party animal hona",
+      pickedTimes: 2,
+    },
+    {
+      name: "Tera Baap",
+      avatarColor: "orange",
+      answer: "Lmao nvm",
+      pickedTimes: 0,
+    },
+    {
+      name: "OJ",
+      avatarColor: "blue",
+      answer: "Being the best coder",
+      pickedTimes: 1,
+    },
+    {
+      name: "Tosh",
+      avatarColor: "purple",
+      answer: "I will win",
+      pickedTimes: 0,
+    },
+  ];
+
+  const roundScoreList = [
+    { name: "Yash", avatarColor: "pink", isReady: true, score: 5 },
+    { name: "Tosh", avatarColor: "purple", isReady: false, score: 5 },
+    { name: "OJ", avatarColor: "blue", isReady: false, score: 4 },
+    { name: "Tera Baap", avatarColor: "orange", isReady: true, score: 3 },
+  ];
+
+  const [isReadyForNextRound, setIsReadyForNextRound] = useState(false);
+
+  const handleReadyBtn = () => {
+    console.log("The player is ready for the next round");
+    setIsReadyForNextRound(true);
+  };
 
   return (
     <div className="scores-container">
@@ -25,13 +68,13 @@ const Scores = () => {
       </TruthHeader>
       <div className="scores-list--container">
         <div className="scores--picked-yours-heading">
-          {playerList.length > 0
-            ? `${playerList.length} players liked `
+          {playersSelectedYourAnswerList.length > 0
+            ? `${playersSelectedYourAnswerList.length} players liked `
             : "No one picked "}
           your answer
         </div>
         <div className="scored--picked-yours-players">
-          {playerList.map((player) => (
+          {playersSelectedYourAnswerList.map((player) => (
             <PlayerDetailsCard
               name={player.name}
               avatarColor={player.avatarColor}
@@ -43,68 +86,57 @@ const Scores = () => {
           How many times was each answer picked?
         </div>
         <div className="scores-list--answers-container">
-        <PlayerScoreCard
-            name="Yash"
-            avatarColor="pink"
-            isAnswer
-            answer="party animal hona"
-            picked={2}
-          />
-          <PlayerScoreCard
-            name="Tera Baap"
-            avatarColor="orange"
-            isAnswer
-            answer="Lmao nvm"
-            picked={0}
-          />
-          <PlayerScoreCard
-            name="OJ"
-            avatarColor="blue"
-            isAnswer
-            answer="Being the best coder"
-            picked={1}
-          />
-          <PlayerScoreCard
-            name="Tosh"
-            avatarColor="purple"
-            isAnswer
-            answer="I will win"
-            picked={0}
-          />
+          {allAnswersList.map((answer) => (
+            <PlayerScoreCard
+              isAnswer
+              name={answer.name}
+              avatarColor={answer.avatarColor}
+              answer={answer.answer}
+              picked={answer.pickedTimes}
+            />
+          ))}
         </div>
         <div className="scores--score-heading">Scores</div>
         <div className="scores-list--heading">
           Yash and Tosh are tied for the lead!
         </div>
         <div className="scores-list--players-container">
-          <PlayerScoreCard
-            name="Yash"
-            avatarColor="pink"
-            isReady={true}
-            score={5}
-          />
-
-          <PlayerScoreCard
-            name="Tosh"
-            avatarColor="purple"
-            isReady={false}
-            score={5}
-          />
-
-          <PlayerScoreCard
-            name="OJ"
-            avatarColor="blue"
-            isReady={false}
-            score={4}
-          />
-
-          <PlayerScoreCard
-            name="Tera Baap"
-            avatarColor="orange"
-            isReady={true}
-            score={3}
-          />
+          {roundScoreList.map((player) => (
+            <PlayerScoreCard
+              name={player.name}
+              avatarColor={player.avatarColor}
+              isReady={player.isReady}
+              score={player.score}
+            />
+          ))}
         </div>
+      </div>
+      <div
+        className={
+          isReadyForNextRound
+            ? "scores-list--footer-ready"
+            : "scores-list--footer-not-ready"
+        }
+      >
+        {isReadyForNextRound ? (
+          <>
+            <div className="scores-list--footer-ready-text">
+              Waiting for players to ready up...
+            </div>
+            <WaitingAnimation />
+          </>
+        ) : (
+          <>
+            <div className="scores-list--footer-not-ready-text">
+              Are you ready for the next round?
+            </div>
+            <div className="scores-list--footer-ready-btn">
+              <CommonButton isPrimary functionality={handleReadyBtn}>
+                Ready!
+              </CommonButton>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

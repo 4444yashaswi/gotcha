@@ -518,14 +518,16 @@ input:focus-visible {
 .scores-container {
   background-color: #3474b4;
   height: 100vh;
-  /* overflow: hidden; */
+  overflow: hidden;
   /* padding-bottom: 20vh; */
 }
 
 .scores-list--container {
-  background-color: white;
-  border-radius: 50px;
-  height: 100%;
+  background-color: #ffffff;
+  border-radius: 50px 50px 0 0;
+  height: 73vh;
+  overflow-y: scroll;
+  padding-bottom: 4vh;
   padding-top: 0.5vh;
   margin-top: 1.5vh;
   box-sizing: border-box;
@@ -559,8 +561,42 @@ input:focus-visible {
   text-align: center;
 }
 
-.scores-list--players-container {
+/* .scores-list--players-container {
   padding-bottom: 20vh;
+} */
+
+.scores-list--footer-not-ready {
+  background-color: #E8EFF5;
+  height: 18vh;
+  box-shadow: 0px -13px 20px 20px rgb(232,239,245, 1);
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.scores-list--footer-not-ready-text {
+  font-size: 1.5vh;
+  margin-bottom: 1.5vh;
+  color: #869CB4;
+}
+
+.scores-list--footer-ready {
+  background-color: #4793CF;
+  height: 18vh;
+  box-shadow: 0px -13px 20px 20px rgb(71,147,207, 1);
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.scores-list--footer-ready-text {
+  color: #ffffff;
+  font-size: 2.3vh;
+}
+
+.scores-list--footer-ready-btn {
+  display: flex;
+  justify-content: center;
 }
 
 .triangle {
