@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import CommonButton from "../Components/UI/CommonButton";
-import PlayerCard from "../Components/UI/PlayerCard";
+import PlayerCard from "../Components/UI/PlayerDetails/PlayerCard";
 import Modal from "../Components/UI/Modal";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 // import axios from "../Axios/Axios";
 import { MdIosShare } from "react-icons/md";
 import { IoIosArrowBack } from "react-icons/io";
 
-const Lobby = () => {
+const Lobby = ({ setRoomId }) => {
   // const playerList = [
   //   { name: "OJ", avatarColor: "blue", isReady: true },
   //   { name: "Tera Baap", avatarColor: "orange", isReady: true },
@@ -56,6 +56,7 @@ const Lobby = () => {
 
   useEffect(() => {
     setPlayers([{ name, avatarColor, isReady, key: name }, ...playerList]);
+    setRoomId(roomId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

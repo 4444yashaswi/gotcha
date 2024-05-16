@@ -1,0 +1,53 @@
+.truth-header--container {
+  /* border: 1px solid pink; */
+  text-align: center;
+  position: relative;
+  padding-top: 9vh;
+}
+
+.truth-header--menu {
+  position: absolute;
+  left: 5vw;
+  top: 7.5vh;
+  height: 5vh;
+  width: 5vh;
+  border-radius: 50%;
+  background-color: #ecf5fa;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.truth-header--title {
+  color: white;
+  font-weight: 700;
+  font-size: 1.8vh;
+}
+
+.truth-question--container {
+  height: fit-content;
+  min-height: 14.2vh;
+  background-color: white;
+  margin: 1.5vh 2vw 1vh 2vw;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+}
+
+.truth-question--avatar-container {
+  box-sizing: border-box;
+  width: 33vw;
+  height: 5vh;
+  padding: 0 2vw 0 2vw;
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+
+.truth-question--question {
+  color: #2aa6e4;
+  font-size: 2.5vh;
+  font-weight: 600;
+  padding: 1vh 0 1vh 0;
+  max-width: 73vw;
+}

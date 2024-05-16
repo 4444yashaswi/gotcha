@@ -1,7 +1,9 @@
-import axios from 'axios';
+import axios from "axios";
+import CONSTANTS from "../Constants/Constants";
 
+const { BASE_URL } = CONSTANTS;
 const axiosInstance = axios.create({
-    baseURL: 'http://192.168.0.104:8000'
+  baseURL: BASE_URL,
 });
 
 export default axiosInstance;
