@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import List
+from typing import List, Literal
 
 # Model for NameGenerator
 class nameGenerator(BaseModel):
@@ -38,6 +38,7 @@ class Room(BaseModel):
     admin: str  # user name
     rounds: int # from frontend
     current_round: int = 1  # increment after every round
+    room_status: Literal["Lobby", "Submit", "Select", "Score"] = "Lobby" # To allow specific APIs to be triggered at specific time only
     user_list: List[User] = []  # addition allowed before starting game
     trivia_list: List[TriviaListElement] = []   # Retrieve based on number of rounds before starting game
     trivia_associated_users: List[str] = [] # with every round, send list of people who the question is associated to

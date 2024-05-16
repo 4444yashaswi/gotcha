@@ -11,3 +11,9 @@ class JoinRoomData(BaseModel):
     roomId: str
     userName: str
     avatarColour: str
+
+
+class UpdateRoundData(BaseModel):
+    roomId: str
+    userName: str
+    rounds: int

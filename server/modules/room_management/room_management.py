@@ -3,6 +3,7 @@ from fastapi import APIRouter, Header, HTTPException, status, Request, File, Que
 from fastapi.params import Depends
 import logging
 
+from config.common_function import room_user_validation
 from config.config import Constants
 from config.config import settings
 from config.database import get_db
@@ -107,40 +108,79 @@ def generate_random_trivia_questions_list(rounds, db):
 @router.post("/createRoom")
 def create_room(request: Request, room_data: schemas.CreateRoomData, db = Depends(get_db)):
     try:
-            rooms_db = db["rooms"]
-            
-            # get unique room name
+        rooms_db = db["rooms"]
+        
+        # get unique room name
+        random_name = f"{random.choice(Constants.FOUR_LETTER_WORDS)} {random.choice(Constants.FOUR_LETTER_WORDS)}"
+        while rooms_db.find_one({"id": random_name}) is not None: 
             random_name = f"{random.choice(Constants.FOUR_LETTER_WORDS)} {random.choice(Constants.FOUR_LETTER_WORDS)}"
-            while rooms_db.find_one({"id": random_name}) is not None: 
-                random_name = f"{random.choice(Constants.FOUR_LETTER_WORDS)} {random.choice(Constants.FOUR_LETTER_WORDS)}"
-            
-            user = generate_user_object(user_name=room_data.userName, avatar_colour=room_data.avatarColour)
-            trivia_list = generate_random_trivia_questions_list(rounds=room_data.rounds, db=db)
+        
+        user = generate_user_object(user_name=room_data.userName, avatar_colour=room_data.avatarColour)
+        trivia_list = generate_random_trivia_questions_list(rounds=room_data.rounds, db=db)
 
-            room = models.Room(
-                id=random_name,
-                admin=room_data.userName,
-                rounds=room_data.rounds,
-                user_list=[user],
-                trivia_list=trivia_list,
-                trivia_associated_users=[]
-            ).model_dump()
+        room = models.Room(
+            id=random_name,
+            admin=room_data.userName,
+            rounds=room_data.rounds,
+            user_list=[user],
+            trivia_list=trivia_list,
+            trivia_associated_users=[]
+        ).model_dump()
 
-            
-            # result = rooms_db.insert_one(room)
-            # return {"id": str(result.inserted_id)}
-            result = rooms_db.insert_one(room)
-            
-            response = {
-                "detail": "Room created",
-                "roomId": random_name
-            }
+        
+        # result = rooms_db.insert_one(room)
+        # return {"id": str(result.inserted_id)}
+        result = rooms_db.insert_one(room)
+        
+        response = {
+            "detail": "Room created",
+            "roomId": random_name
+        }
 
-            return response
+        return response
 
     
     except HTTPException as e:
         logger.error(f"Error while  creating room: {str(e)}")
+        raise HTTPException(status_code=e.status_code, detail=e.detail)
+    
+    except Exception as e:
+        logger.error(f"Error while  creating room: {str(e)}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Something went wrong!")
+
+
+
+# API to update rounds
+@router.put("/updateRounds")
+def update_rounds(request: Request, room_data: schemas.UpdateRoundData, db = Depends(get_db)):
+    try:        
+        rooms_db = db["rooms"]
+
+        # Validate room and user
+        room = room_user_validation(room_id=room_data.roomId, user_name=room_data.userName, db=db)
+        
+        # Validate room status in Lobby
+        if room["room_status"] != Constants.ROOM_STATUS_LOBBY:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Can not update rounds after game has started for {room_data.roomId}")
+
+        # Validate user is Admin
+        if room["admin"] != room_data.userName:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"{room_data.userName} not admin for {room_data.roomId}")
+        
+        trivia_list = generate_random_trivia_questions_list(rounds=room_data.rounds, db=db)
+        trivia_list = [list_element.model_dump() for list_element in trivia_list]
+        
+        rooms_db.update_one({"id": room["id"]}, {"$set": {"rounds": len(trivia_list),"trivia_list": trivia_list}})
+
+        response = {
+            "detail": "Rounds Updated!",
+            "roomId": room_data.roomId
+        }
+
+        return response
+
+    except HTTPException as e:
+        logger.error(f"Error while updating rounds: {str(e)}")
         raise HTTPException(status_code=e.status_code, detail=e.detail)
     
     except Exception as e:

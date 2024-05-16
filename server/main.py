@@ -2,8 +2,9 @@ from fastapi import FastAPI
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 
-from modules.trivia_management import main as main_trivia_management
+from modules.room_management import main as main_room_management
 from modules.master_management import main as main_master_management
+from modules.websocket import main as main_websocket
 
 from config.config import Constants
 from config.config import settings
@@ -27,8 +28,9 @@ app.add_middleware(
 async def amialive():
     return "gotcha-backend is up and running"
 
-app.include_router(main_trivia_management.router)
+app.include_router(main_room_management.router)
 app.include_router(main_master_management.router)
+app.include_router(main_websocket.router)
 
 if __name__ == "__main__":
     print(settings.title)
