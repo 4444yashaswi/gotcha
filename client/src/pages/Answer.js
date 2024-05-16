@@ -19,10 +19,22 @@ const Answer = ({ setSubmitted }) => {
   const [answer, setAnswer] = useState("");
   const [isDisabled, setIsDisabled] = useState(true);
 
+  const setCaretPosition = (el, position) => {
+    const range = document.createRange();
+    const sel = window.getSelection();
+
+    range.setStart(el.childNodes[0], position); // Adjust the position as needed
+    range.collapse(true);
+
+    sel.removeAllRanges();
+    sel.addRange(range);
+  };
+
   const answerChangeHandler = ({ target }) => {
     const input = target.innerText;
     if (target.innerText.length > Limit) {
       target.innerText = answer;
+      setCaretPosition(textAreaRef.current, 100);
     } else {
       setAnswer(input);
       setIsDisabled(input.length === 0);

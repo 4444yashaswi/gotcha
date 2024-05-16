@@ -28,14 +28,14 @@ const Landing = () => {
   // const joinExistingRoom = async () => {
   //   setIsLoading(false);
   //   const joinRoomBody = {userName: avatarInitial, avatarColour: bgColor, roomId: "cake clog"};
-  //   const getRoomDetails = await axios.get('/triviaManagement/joinRoom', {...joinRoomBody});
+  //   const getRoomDetails = await axios.get('/roomManagement/joinRoom', {...joinRoomBody});
   //   setRoomDetails(getRoomDetails);
   // }
 
   const startNewRoom = async () => {
     setIsLoading(true);
     const newRoomBody = {userName: avatarInitial, avatarColour: bgColor, rounds: 5};
-    const getRoomDetails = await axios.post('/triviaManagement/createRoom', {...newRoomBody});
+    const getRoomDetails = await axios.post('/roomManagement/createRoom', {...newRoomBody});
     setRoomDetails(getRoomDetails);
   }
 

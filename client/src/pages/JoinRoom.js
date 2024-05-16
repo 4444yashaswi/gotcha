@@ -67,7 +67,7 @@ const JoinRoom = () => {
       avatarColour: avatarColor,
       roomId: sendRoomId.toLowerCase(),
     };
-    const getRoomDetails = await axios.post("/triviaManagement/joinRoom", {
+    const getRoomDetails = await axios.post("/roomManagement/joinRoom", {
       ...joinRoomBody,
     });
     setRoomDetails(getRoomDetails);
