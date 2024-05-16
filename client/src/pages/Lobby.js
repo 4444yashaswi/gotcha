@@ -3,7 +3,7 @@ import CommonButton from "../Components/UI/CommonButton";
 import PlayerCard from "../Components/UI/PlayerDetails/PlayerCard";
 import Modal from "../Components/UI/Modal";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-// import axios from "../Axios/Axios";
+import axios from "../Axios/Axios";
 import { MdIosShare } from "react-icons/md";
 import { IoIosArrowBack } from "react-icons/io";
 
@@ -18,7 +18,7 @@ const Lobby = ({ setRoomId }) => {
   //   { name: "Goyal", avatarColor: "pink", isReady: true },
   //   { name: "Omar", avatarColor: "orange", isReady: true },
   // ];
-  
+
   const playerList = useLocation().state || [];
 
   const roundsList = ["5", "7", "10", "15"];
@@ -33,13 +33,22 @@ const Lobby = ({ setRoomId }) => {
   const { roomId, name, avatarColor, isAdmin } = useParams();
 
   const readyBtnHandler = async () => {
-    // const response = await axios.get(`/triviaManagement/hit?name=${name}`);
+    // const response = await axios.get(`/roomManagement/hit?name=${name}`);
     // console.log(response);
     setIsReady((isReady) => !isReady);
   };
 
-  const roundsClickHandler = (round) => {
+  const roundsClickHandler = async (round) => {
     setNoOfRounds(round);
+    const updateRoundsPayload = {
+      roomId: roomId,
+      userName: name,
+      rounds: round,
+    };
+    const updatedRounds = await axios.put("/roomManagement/updateRounds", {
+      ...updateRoundsPayload,
+    });
+    console.log(updatedRounds);
   };
 
   const backButtonFunctionality = () => {
@@ -72,19 +81,18 @@ const Lobby = ({ setRoomId }) => {
 
   useEffect(() => {
     let isTempAllReady = true;
-    players.map(({ isReady }) => isTempAllReady = isTempAllReady && isReady);
+    players.map(({ isReady }) => (isTempAllReady = isTempAllReady && isReady));
     setIsAllReady(isTempAllReady);
   }, [players]);
 
   useEffect(() => {
     const readyTimeOut = setTimeout(() => {
-      if (isAllReady)
-        console.log("all are ready");
+      if (isAllReady) console.log("all are ready");
     }, 5000);
 
     return () => {
       clearTimeout(readyTimeOut);
-    }
+    };
   }, [isAllReady]);
 
   return (
