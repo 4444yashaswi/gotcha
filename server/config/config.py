@@ -17,6 +17,7 @@ settings = DevelopmentSettings()
 class Constants:
     DEFAULT_PORT = 8000
     TRIVIA_MANAGEMENT = "triviaManagement"
+    ROOM_MANAGEMENT = "roomManagement"
     MASTER_MANAGEMENT = "masterManagement"
     WEBSOCKET = "websocket"
 
