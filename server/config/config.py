@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from typing import List, Dict
+from fastapi import WebSocket
 
 class DevelopmentSettings(BaseSettings):
     title: str = "FastAPI - gotcha (development)"
@@ -16,6 +18,7 @@ class Constants:
     DEFAULT_PORT = 8000
     TRIVIA_MANAGEMENT = "triviaManagement"
     MASTER_MANAGEMENT = "masterManagement"
+    WEBSOCKET = "websocket"
 
     FOUR_LETTER_WORDS = [
         "also", "star", "sock", "ball", "tree", "boat", "fish", "lamb", "fork", "bird",
@@ -29,3 +32,8 @@ class Constants:
         "gawk", "hush", "inch", "jack", "lava", "muck", "note", "pulp", "rust", "seed",
         "tint", "veto", "whiz", "axle", "bump", "clog", "dusk", "epic", "fast", "glow"
     ]
+
+    ROOM_STATUS_LOBBY = "Lobby"
+    ROOM_STATUS_SUBMIT = "Submit"
+    ROOM_STATUS_SELECT = "Select"
+    ROOM_STATUS_SCORE = "Score"

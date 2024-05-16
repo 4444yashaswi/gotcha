@@ -61,9 +61,9 @@ def create_trivia(request: Request, addDummy: Optional[bool], triviaData: Option
         return response
     
     except HTTPException as e:
-        logger.error(f"Error while  creating room: {str(e)}")
+        logger.error(f"Error while  adding Trivia: {str(e)}")
         raise HTTPException(status_code=e.status_code, detail=e.detail)
     
     except Exception as e:
-        logger.error(f"Error while  creating room: {str(e)}")
+        logger.error(f"Error while  adding Trivia: {str(e)}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Something went wrong!")
