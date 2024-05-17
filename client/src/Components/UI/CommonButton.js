@@ -8,7 +8,14 @@ const CommonButton = ({
   children,
   style,
 }) => {
+  const getStyleType = (primary) => {
+    if (primary === "exit") return "exit";
+    if (primary) return "primary";
+    else return "secondary";
+  };
+
   const disabledStyle = {
+    "exit": { cursor: "not-allowed" },
     true: {
       cursor: "not-allowed",
       backgroundColor: "#93C5DE",
@@ -19,9 +26,7 @@ const CommonButton = ({
 
   return (
     <div
-      className={
-        isPrimary ? "btn-container--primary" : "btn-container--secondary"
-      }
+      className={`btn-container--${getStyleType(isPrimary)}`}
       style={
         isDisabled ? { ...style, ...disabledStyle?.[isPrimary] } : { ...style }
       }
@@ -29,14 +34,8 @@ const CommonButton = ({
         if (!isDisabled) functionality();
       }}
     >
-      <div
-        className={isPrimary ? "btn-border--primary" : "btn-border--secondary"}
-      >
-        <div
-          className={
-            isPrimary ? "btn-children--primary" : "btn-children--secondary"
-          }
-        >
+      <div className={`btn-border--${getStyleType(isPrimary)}`}>
+        <div className={`btn-children--${getStyleType(isPrimary)}`}>
           {children}
         </div>
       </div>
