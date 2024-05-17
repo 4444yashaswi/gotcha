@@ -14,9 +14,9 @@ class Trivia(BaseModel):
 # Model for Rooms
 class Answer(BaseModel):
     response: str   # from frontend
-    picked: str     # from frontend - whose answer pucked by user for this round
-    picked_by: List[str]    # from frontend - who all picked this user's ans for this round
-    round_score: int    # computed based on picked_by for this round
+    picked: Optional[str] = None     # from frontend - whose answer pucked by user for this round
+    picked_by: List[str] = []   # from frontend - who all picked this user's ans for this round
+    round_score: int = 0   # computed based on picked_by for this round
 
 
 class User(BaseModel):
