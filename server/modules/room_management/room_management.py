@@ -192,7 +192,7 @@ def update_rounds(request: Request, room_data: schemas.UpdateRoundData, db = Dep
 
 
 # API to get user list with required status
-@router.get("userList")
+@router.get("/userList")
 def get_user_list(request: Request, roomId: str, userName: str, flag: Literal["Ready", "Submit", "Select"], db = Depends(get_db)):
     try:
         # Validate room and user

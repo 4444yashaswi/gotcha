@@ -34,7 +34,7 @@ def get_question(request: Request, roomId: str, userName: str, db = Depends(get_
         # Validate room and user
         room = room_user_validation(room_id=roomId, user_name=userName, db=db)
         
-        # Validate room status in Lobby
+        # Validate room status in Submit
         if room["room_status"] != Constants.ROOM_STATUS_SUBMIT:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Can not get question, not valid status for {roomId}")
         
@@ -62,6 +62,7 @@ def get_question(request: Request, roomId: str, userName: str, db = Depends(get_
             updated_trivia = updated_trivia.replace(Constants.USER_NAME_PLACEHOLDER, user["name"], 1)
         
         response = {
+            "roomId": roomId,
             "round": room["current_round"],
             "trivia": updated_trivia,
             "associated_users": selected_users
@@ -76,4 +77,58 @@ def get_question(request: Request, roomId: str, userName: str, db = Depends(get_
     
     except Exception as e:
         logger.error(f"Error while getting question: {str(e)}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Something went wrong!")
+
+
+
+
+@router.post("/submitAnswer")
+def submit_answer(request: Request, answer_data: schemas.AnswerData, db = Depends(get_db)):
+    try:
+        room_db = db["rooms"]
+
+        # Validate room and user
+        room = room_user_validation(room_id=answer_data.roomId, user_name=answer_data.userName, db=db)
+
+        # Validate room status in Submit
+        if room["room_status"] != Constants.ROOM_STATUS_SUBMIT:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Can not submit answer, not valid status for {answer_data.roomId}")
+
+        answer_data.answer = answer_data.answer.lower()
+        answer = models.Answer(
+            response=answer_data.answer
+        ).model_dump()
+
+        user = next((user for user in room["user_list"] if user["name"] == answer_data.userName), None)
+
+        if user["has_submitted"] == True:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Answer already submitted for {answer_data.userName}")
+        
+        # Check for duplicate answers
+        for existing_user in room["user_list"]:
+            if existing_user.get("answer") and existing_user["answer"] == answer:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Duplicate answer found")
+
+        # Update the answer for the specific user
+        room_db.update_one(
+            {"id": answer_data.roomId, "user_list.name": answer_data.userName},
+            {"$set": {"user_list.$.answer": answer, "user_list.$.has_submitted": True}}
+        )
+
+        response = {
+            "roomId": answer_data.roomId,
+            "round": room["current_round"],
+            "detail": "Answer submitted successfully!"
+        }
+
+        return response
+
+
+
+    except HTTPException as e:
+        logger.error(f"Error while submitting ansewer: {str(e)}")
+        raise HTTPException(status_code=e.status_code, detail=e.detail)
+    
+    except Exception as e:
+        logger.error(f"Error while submitting ansewer: {str(e)}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Something went wrong!")
