@@ -1,5 +1,6 @@
 // import React, { useState } from "react";
 // import PlayerDetailsCard from "../Components/UI/PlayerDetails/PlayerDetailsCard";
+import CommonButton from "../Components/UI/CommonButton";
 import PlayerScoreCard from "../Components/UI/PlayerDetails/PlayerScoreCard";
 // import Countdown from "../Components/UI/Countdown";
 // import PlayerCard from "../Components/UI/PlayerCard";
@@ -41,6 +42,8 @@ const PageNotFound = () => {
       <PlayerScoreCard name="Ohm" avatarColor="orange" isAnswer answer="party animal hona" picked={2} />
       
       <PlayerScoreCard name="Ohm" avatarColor="orange" isReady={true} score={5} />
+
+      <div style={{display: "flex", justifyContent: "center", textAlign: "center  "}}><CommonButton isPrimary >page not Found</CommonButton></div>
     </div>
   );
 };
