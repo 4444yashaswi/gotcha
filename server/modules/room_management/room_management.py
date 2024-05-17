@@ -1,4 +1,5 @@
 import random
+from typing import Literal
 from fastapi import APIRouter, Header, HTTPException, status, Request, File, Query
 from fastapi.params import Depends
 import logging
@@ -187,4 +188,33 @@ def update_rounds(request: Request, room_data: schemas.UpdateRoundData, db = Dep
     
     except Exception as e:
         logger.error(f"Error while  updating rounds: {str(e)}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Something went wrong!")
+
+
+# API to get user list with required status
+@router.get("userList")
+def get_user_list(request: Request, roomId: str, userName: str, flag: Literal["Ready", "Submit", "Select"], db = Depends(get_db)):
+    try:
+        # Validate room and user
+        room = room_user_validation(room_id=roomId, user_name=userName, db=db)
+        
+        user_list = [{
+            "name": user["name"],
+            "avatarColour": user["avatar_colour"],
+            "status": user[Constants.USER_STATUS_FLAG_MAPPING[flag]]
+        } for user in room["user_list"]]
+
+        response = {
+            "userList": user_list,
+            "roomId": roomId
+        }
+
+        return response
+
+    except HTTPException as e:
+        logger.error(f"Error while getting user list: {str(e)}")
+        raise HTTPException(status_code=e.status_code, detail=e.detail)
+    
+    except Exception as e:
+        logger.error(f"Error while getting user list: {str(e)}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Something went wrong!")
