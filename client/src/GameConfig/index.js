@@ -20,7 +20,7 @@ const Index = () => {
           path="/lobby/:roomId/:name/:avatarColor/:isAdmin"
           element={<Lobby setRoomId={setRoomId} />}
         />
-        <Route exact path="/answer" element={<SubmitAnswer />} />
+        <Route exact path="/answer/:roomId/:name" element={<SubmitAnswer />} />
         <Route exact path="/select-option" element={<SelectOption />} />
         <Route exact path="/scores" element={<YourScore />} />
         <Route exact path="*" element={<PageNotFound />} />

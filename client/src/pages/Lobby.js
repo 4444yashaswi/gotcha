@@ -87,12 +87,13 @@ const Lobby = ({ setRoomId }) => {
 
   useEffect(() => {
     const readyTimeOut = setTimeout(() => {
-      if (isAllReady) console.log("all are ready");
+      if (isAllReady) navigate(`/answer/${roomId}/${name}`);
     }, 5000);
 
     return () => {
       clearTimeout(readyTimeOut);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAllReady]);
 
   return (

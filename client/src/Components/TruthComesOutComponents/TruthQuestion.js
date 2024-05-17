@@ -1,11 +1,11 @@
 import React from "react";
 import "./Truth.css";
 
-const TruthQuestion = ({ question, dependentDependent }) => {
+const TruthQuestion = ({ question, dependentPlayers }) => {
   const UserAvatar = ({ userName, avatarColor, index }) => {
     let styleMap;
-    if (dependentDependent.length === 1) styleMap = {};
-    else if (dependentDependent.length === 2)
+    if (dependentPlayers.length === 1) styleMap = {};
+    else if (dependentPlayers.length === 2)
       styleMap = {
         0: { left: "0" },
         1: { right: "0" },
@@ -36,7 +36,7 @@ const TruthQuestion = ({ question, dependentDependent }) => {
           ...styleMap[index],
         }}
       >
-        {userName[0]}
+        {userName?.[0]}
       </div>
     );
   };
@@ -44,10 +44,10 @@ const TruthQuestion = ({ question, dependentDependent }) => {
   return (
     <div className="truth-question--container">
       <div className="truth-question--avatar-container">
-        {dependentDependent.map((player, index) => (
+        {dependentPlayers.map((player, index) => (
           <UserAvatar
-            userName={player.nameName}
-            avatarColor={player.colorColor}
+            userName={player?.name}
+            avatarColor={player?.avatarColour}
             index={index}
             key={index}
           />
