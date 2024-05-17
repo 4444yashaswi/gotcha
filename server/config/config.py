@@ -34,6 +34,14 @@ class Constants:
         "tint", "veto", "whiz", "axle", "bump", "clog", "dusk", "epic", "fast", "glow"
     ]
 
+    USER_STATUS_FLAG_MAPPING = {
+        "Ready": "is_ready",
+        "Submit": "has_submitted",
+        "Select": "has_selected"
+    }
+
+    USER_NAME_PLACEHOLDER = "<user_name>"
+
     ROOM_STATUS_LOBBY = "Lobby"
     ROOM_STATUS_SUBMIT = "Submit"
     ROOM_STATUS_SELECT = "Select"

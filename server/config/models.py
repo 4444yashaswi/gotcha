@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import List, Literal
+from typing import Dict, List, Literal, Optional
 
 # Model for NameGenerator
 class nameGenerator(BaseModel):
@@ -26,6 +26,7 @@ class User(BaseModel):
     is_ready: bool = False  # flag at the start of game
     has_submitted: bool = False # flag for every round's answer submission
     has_selected: bool = False  # flag for every round's vote
+    answer: Optional[Answer] = None # Set to none whenever state change from any to submit
 
 
 class TriviaListElement(BaseModel):
@@ -41,6 +42,6 @@ class Room(BaseModel):
     room_status: Literal["Lobby", "Submit", "Select", "Score"] = "Lobby" # To allow specific APIs to be triggered at specific time only
     user_list: List[User] = []  # addition allowed before starting game
     trivia_list: List[TriviaListElement] = []   # Retrieve based on number of rounds before starting game
-    trivia_associated_users: List[str] = [] # with every round, send list of people who the question is associated to
+    trivia_associated_users: List[Dict[str, str]] = [] # with every round, send list of people who the question is associated to
     is_running: bool = False    # flag for initial room settlement
 

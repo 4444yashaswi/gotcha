@@ -1,4 +1,5 @@
 import random
+from typing import Literal
 from fastapi import APIRouter, Header, HTTPException, status, Request, File, Query
 from fastapi.params import Depends
 import logging
@@ -52,6 +53,8 @@ def join_room(request: Request, room_data: schemas.JoinRoomData, db = Depends(ge
         if room is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Room not found with id: {room_data.roomId}")
         
+        if room["room_status"] != Constants.ROOM_STATUS_LOBBY: # ToDo: Change this in v2
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Can not join rooms after game has started for {room_data.roomId}")
         
         user_list = [{
             "name": user["name"],
@@ -184,5 +187,34 @@ def update_rounds(request: Request, room_data: schemas.UpdateRoundData, db = Dep
         raise HTTPException(status_code=e.status_code, detail=e.detail)
     
     except Exception as e:
-        logger.error(f"Error while  creating room: {str(e)}")
+        logger.error(f"Error while  updating rounds: {str(e)}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Something went wrong!")
+
+
+# API to get user list with required status
+@router.get("userList")
+def get_user_list(request: Request, roomId: str, userName: str, flag: Literal["Ready", "Submit", "Select"], db = Depends(get_db)):
+    try:
+        # Validate room and user
+        room = room_user_validation(room_id=roomId, user_name=userName, db=db)
+        
+        user_list = [{
+            "name": user["name"],
+            "avatarColour": user["avatar_colour"],
+            "status": user[Constants.USER_STATUS_FLAG_MAPPING[flag]]
+        } for user in room["user_list"]]
+
+        response = {
+            "userList": user_list,
+            "roomId": roomId
+        }
+
+        return response
+
+    except HTTPException as e:
+        logger.error(f"Error while getting user list: {str(e)}")
+        raise HTTPException(status_code=e.status_code, detail=e.detail)
+    
+    except Exception as e:
+        logger.error(f"Error while getting user list: {str(e)}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Something went wrong!")
