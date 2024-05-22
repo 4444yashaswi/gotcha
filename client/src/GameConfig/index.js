@@ -6,6 +6,7 @@ import SocketConfig from "./SocketConfig";
 import SubmitAnswer from "../pages/paired pages/SubmitAnswer";
 import SelectOption from "../pages/paired pages/SelectOption";
 import YourScore from "../pages/paired pages/YourScore";
+import GameResult from "../pages/paired pages/GameResult";
 
 const Index = () => {
   const [roomId, setRoomId] = useState();
@@ -21,8 +22,9 @@ const Index = () => {
           element={<Lobby setRoomId={setRoomId} />}
         />
         <Route exact path="/answer/:roomId/:name" element={<SubmitAnswer />} />
-        <Route exact path="/select-option" element={<SelectOption />} />
+        <Route exact path="/select-option/:roomId/:name" element={<SelectOption />} />
         <Route exact path="/scores" element={<YourScore />} />
+        <Route exact path="/result" element={<GameResult />} />
         <Route exact path="*" element={<PageNotFound />} />
       </Routes>
     </>

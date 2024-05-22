@@ -1,6 +1,7 @@
-// import React, { useState } from "react";
+import React, { useState } from "react";
 // import PlayerDetailsCard from "../Components/UI/PlayerDetails/PlayerDetailsCard";
 import CommonButton from "../Components/UI/CommonButton";
+import OptionsDrawer from "../Components/UI/OptionsDrawer";
 import PlayerScoreCard from "../Components/UI/PlayerDetails/PlayerScoreCard";
 // import Countdown from "../Components/UI/Countdown";
 // import PlayerCard from "../Components/UI/PlayerCard";
@@ -8,6 +9,10 @@ import PlayerScoreCard from "../Components/UI/PlayerDetails/PlayerScoreCard";
 // import Loader from "../Components/UI/Loader";
 
 const PageNotFound = () => {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(true);
+  const closeDrawerHandler = () => {
+    setIsDrawerOpen(false);
+  }
   //{ name: "Omar", avatarColor: "orange", isReady: true },
   // const onClose = () => {console.log("colse the modal")};
   // const functonality = () => {console.log("execute the functiona;ity")};
@@ -23,6 +28,7 @@ const PageNotFound = () => {
 
   return (
     <div style={{ position: "relative" }}>
+      {isDrawerOpen && <OptionsDrawer closeDrawer={closeDrawerHandler}/>}
       {/* <Modal title="Are you sure you want to leave the game?" onClose={onClose} functionality={functonality}/>
        */}
       {/* <Loader /> */}
