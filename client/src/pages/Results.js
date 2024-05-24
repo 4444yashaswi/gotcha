@@ -4,15 +4,15 @@ import PlayerScoreCard from "../Components/UI/PlayerDetails/PlayerScoreCard";
 import CommonButton from "../Components/UI/CommonButton";
 import { useNavigate } from "react-router-dom";
 
-const Results = () => {
+const Results = ({ playerScores }) => {
   const navigate = useNavigate();
 
-  const roundScoreList = [
-    { name: "Yash", avatarColor: "pink", isReady: true, score: 5 },
-    { name: "Tosh", avatarColor: "purple", isReady: false, score: 5 },
-    { name: "OJ", avatarColor: "blue", isReady: false, score: 4 },
-    { name: "Tera Baap", avatarColor: "orange", isReady: true, score: 3 },
-  ];
+//   const playerScores = [
+//     { name: "Yash", avatarColor: "pink", isReady: true, score: 5 },
+//     { name: "Tosh", avatarColor: "purple", isReady: false, score: 5 },
+//     { name: "OJ", avatarColor: "blue", isReady: false, score: 4 },
+//     { name: "Tera Baap", avatarColor: "orange", isReady: true, score: 3 },
+//   ];
 
   const handleExitBtn = () => {
     navigate("/landing");
@@ -30,12 +30,13 @@ const Results = () => {
       <div className="scores-list--container">
         <div className="scores--score-heading">Scores</div>
         <div className="scores-list--players-container">
-          {roundScoreList.map((player) => (
+          {playerScores.map((player) => (
             <PlayerScoreCard
-              name={player.name}
-              avatarColor={player.avatarColor}
-              isReady={player.isReady}
-              score={player.score}
+              name={player?.name}
+              avatarColor={player?.avatarColour}
+              isReady={player?.isReady}
+              score={player?.score}
+              isStatusNotRequired
             />
           ))}
         </div>

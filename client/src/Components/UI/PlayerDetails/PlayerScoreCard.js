@@ -10,6 +10,7 @@ const PlayerScoreCard = ({
   score,
   isReady,
   isAnswer,
+  isStatusNotRequired,
 }) => {
   return (
     <div className="player-score-card--container">
@@ -17,7 +18,7 @@ const PlayerScoreCard = ({
         name={name}
         avatarColor={avatarColor}
         isReady={isReady || null}
-        isStatusNotRequired={isAnswer}
+        isStatusNotRequired={isAnswer || isStatusNotRequired}
         isNameNotRequired
         containerStyle={{ margin: "1vh 1.5vh" }}
       />

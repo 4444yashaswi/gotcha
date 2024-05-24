@@ -46,12 +46,12 @@ const Options = ({ setSubmitted }) => {
 
   const optionSelectHandler = (option) => {
     console.log("the selected option was ", option);
-    if (option?.submittedBy === name) console.log("You cannot select your own answer!");
-    else {
+    // if (option?.submittedBy === name) console.log("You cannot select your own answer!");
+    // else {
       setIsSubmitDisabled(true);
       submitAnswer(option);
       setSubmitted(true);
-    }
+    // }
   };
 
   const getQuestionAndOptions = async () => {
