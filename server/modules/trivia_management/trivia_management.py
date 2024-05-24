@@ -186,6 +186,9 @@ def select_option(Request: Request, option_data: schemas.SelectOptionData, db = 
         # Validate room and user
         room = room_user_validation(room_id=option_data.roomId, user_name=option_data.userName, db=db)
 
+        # Validate room status in Select
+        if room["room_status"] != Constants.ROOM_STATUS_SELECT:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Can not get options, not valid status for {option_data.roomId}")
         
         for user in room["user_list"]:
             if user["name"] == option_data.userName:

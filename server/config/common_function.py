@@ -23,7 +23,7 @@ def room_user_validation(room_id, user_name, db):
 
 # Function update flag and check all users in the game to update room status
 def update_user_room_status(user_data: SocketModel, room, db):
-    rooms_db = db["rooms"]
+    room_db = db["rooms"]
     
     # check room flag for relevant info
     if room["room_status"] != user_data.status:
@@ -33,15 +33,22 @@ def update_user_room_status(user_data: SocketModel, room, db):
 
     for user in room["user_list"]:
         if user["name"] == user_data.userName:
-            # ToDo: write mongodb query to Update user status
+            room_db.update_one(
+                {"id": user_data.roomId, "user_list.name": user["name"]},
+                {"$set": {f"user_list.$.{Constants.USER_STATUS_FLAG_MAPPING[user_data.status]}": True}}
+            )
             status_count += 1        
         
         elif user[Constants.USER_STATUS_FLAG_MAPPING[user_data.status]]:
             status_count += 1
     
     if status_count == len(room["user_list"]):
-        # ToDo: 1. Update room status to next status. 2. Send Appropriate response to caller
-        # Lobby -> Submit -> Select -> Ready -> Submit
+        room_db.update_one(
+            {"id": user_data.roomId},
+            {"$set": {"room_status": room["status"]}}
+        )
+        
+        # ToDo: Send Appropriate response to caller
         return "State change response"
     
     else:
