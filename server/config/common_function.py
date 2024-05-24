@@ -43,14 +43,19 @@ def update_user_room_status(user_data: SocketModel, room, db):
             status_count += 1
     
     if status_count == len(room["user_list"]):
+        # ToDo: Send Appropriate response to caller
+        # Lobby -> Submit -> Select -> Ready -> Submit
+        if room["status"] == Constants.ROOM_STATUS_SCORE:
+             room_db.update_one(
+                {"id": user_data.roomId},
+                {"$set": {"current_round": room["current_round"] + 1}}
+            )
         room_db.update_one(
             {"id": user_data.roomId},
-            {"$set": {"room_status": room["status"]}}
+            {"$set": {"room_status": Constants.NEXT_ROOM_STATUS_MAPPING[room["status"]]}}
         )
-        
-        # ToDo: Send Appropriate response to caller
         return "State change response"
     
     else:
-        # ToDo: 1. Send appropriate response to caller
+        # ToDo: Send appropriate response to caller
         return "No state change response"
