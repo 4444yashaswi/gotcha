@@ -42,6 +42,13 @@ class Constants:
 
     USER_NAME_PLACEHOLDER = "<user_name>"
 
+    NEXT_ROOM_STATUS_MAPPING = {
+        "Lobby": "Submit",
+        "Submit": "Selecct",
+        "Select": "Score",
+        "Score": ""
+    }
+
     ROOM_STATUS_LOBBY = "Lobby"
     ROOM_STATUS_SUBMIT = "Submit"
     ROOM_STATUS_SELECT = "Select"
