@@ -1,6 +1,6 @@
 const CONSTANTS = {
-  BASE_URL: "http://192.168.0.113:8000",
-  WEB_SOCKET_URL: "ws://192.168.0.114:8000",
+  BASE_URL: process.env.REACT_APP_BACKEND_BASE_URL,
+  WEB_SOCKET_URL: process.env.REACT_APP_BACKEND_WEBSOCKET_URL,
 };
 
 export default CONSTANTS;
