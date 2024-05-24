@@ -4,8 +4,8 @@ import PlayerCard from "../Components/UI/PlayerDetails/PlayerCard";
 import Modal from "../Components/UI/Modal";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import axios from "../Axios/Axios";
-import { MdIosShare } from "react-icons/md";
 import { IoIosArrowBack } from "react-icons/io";
+import RoomCode from "../Components/UI/RoomCode";
 
 const Lobby = ({ setRoomId }) => {
   // const playerList = [
@@ -87,12 +87,13 @@ const Lobby = ({ setRoomId }) => {
 
   useEffect(() => {
     const readyTimeOut = setTimeout(() => {
-      if (isAllReady) console.log("all are ready");
+      if (isAllReady) navigate(`/answer/${roomId}/${name}`);
     }, 5000);
 
     return () => {
       clearTimeout(readyTimeOut);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAllReady]);
 
   return (
@@ -116,12 +117,7 @@ const Lobby = ({ setRoomId }) => {
         <div className="lobby-body--join-text">
           Tell your friends to enter this code to join your game
         </div>
-        <div className="lobby-body--code-container">
-          <div className="lobby-body--code">{roomId}</div>
-          <div className="lobby-body--code-share-btn">
-            <MdIosShare />
-          </div>
-        </div>
+        <RoomCode />
         <div className="lobby-body--waiting">
           Waiting for everyone to get Ready...
         </div>

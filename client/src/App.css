@@ -599,6 +599,68 @@ input:focus-visible {
   justify-content: center;
 }
 
+.game-winner--container {
+  background-color: #3373B3;
+  height: 100vh;
+  text-align: center;
+  overflow: hidden;
+}
+
+.game-winner--winner-stack {
+  width: 90vw;
+  height: 2vh;
+  margin: auto;
+  margin-top: 15vh;
+  margin-bottom: 28vh;
+  /* background-color: green; */
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+
+.game-winner--card {
+  min-height: 20vh;
+  width: 87vw;
+  margin: auto;
+  margin-top: 19vh;
+  margin-bottom: 5vh;
+  box-sizing: border-box;
+  padding: 3vh 2vh 2vh 2vh;
+  border-radius: 30px;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  color: #236EB2;
+  font-size: 7vh;
+  font-weight: 700;
+}
+
+.game-winner--symbol-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  box-sizing: border-box;
+  top: -4.5vh;
+  background-color: #ffffff;
+  height: 9vh;
+  width: 9vh;
+  border-radius: 50%;
+  border: solid 1vh #4591CF;
+  color: #4591CF;
+  font-size: 5vh;
+}
+
+
+.game-winner--next-btn-container {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
 .triangle {
   width: 0;
   height: 0;

@@ -1,54 +1,18 @@
 import React from "react";
 import "./Truth.css";
+import PlayerStack from "../UI/PlayerDetails/PlayerStack";
 
-const TruthQuestion = ({ question, dependentDependent }) => {
-  const UserAvatar = ({ userName, avatarColor, index }) => {
-    let styleMap;
-    if (dependentDependent.length === 1) styleMap = {};
-    else if (dependentDependent.length === 2)
-      styleMap = {
-        0: { left: "0" },
-        1: { right: "0" },
-      };
-    else
-      styleMap = {
-        0: { left: "0" },
-        1: {},
-        2: { right: "0" },
-      };
-    return (
-      <div
-        style={{
-          height: "7vh",
-          width: "7vh",
-          borderRadius: "50%",
-          boxSizing: "border-box",
-          border: "4px solid white",
-          fontSize: "3vh",
-          fontWeight: "500",
-          color: "rgba(255, 255, 255, 0.8)",
-          backgroundColor: avatarColor,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          position: "absolute",
-          top: "-18%",
-          ...styleMap[index],
-        }}
-      >
-        {userName[0]}
-      </div>
-    );
-  };
+const TruthQuestion = ({ question, dependentPlayers }) => {
 
   return (
     <div className="truth-question--container">
       <div className="truth-question--avatar-container">
-        {dependentDependent.map((player, index) => (
-          <UserAvatar
-            userName={player.nameName}
-            avatarColor={player.colorColor}
+        {dependentPlayers.map((player, index) => (
+          <PlayerStack
+            userName={player?.name}
+            avatarColor={player?.avatarColour}
             index={index}
+            dependentPlayers={dependentPlayers}
             key={index}
           />
         ))}

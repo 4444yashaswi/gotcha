@@ -1,23 +1,32 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import CommonButton from "../Components/UI/CommonButton";
 import Countdown from "../Components/UI/Countdown";
 import TruthHeader from "../Components/TruthComesOutComponents/TruthHeader";
 import TruthQuestion from "../Components/TruthComesOutComponents/TruthQuestion";
+import axios from "../Axios/Axios";
+import { useParams } from "react-router-dom";
+import Loader from "../Components/UI/Loader";
 
 const Answer = ({ setSubmitted }) => {
   const textAreaRef = useRef();
+  const { roomId, name } = useParams();
 
-  const questonquestion = "If OJ became famous overnight, it would be for";
-  const dependentDependent = [
-    { nameName: "Ojaswi", colorColor: "pink" },
-    { nameName: "Yashaswi", colorColor: "purple" },
-    { nameName: "Toshit", colorColor: "black" },
-  ];
+  // const question = "If OJ became famous overnight, it would be for";
+  // const dependentDependent = [
+  //   { nameName: "Ojaswi", colorColor: "pink" },
+  //   { nameName: "Yashaswi", colorColor: "purple" },
+  //   { nameName: "Toshit", colorColor: "black" },
+  // ];
 
   const Limit = 100;
 
   const [answer, setAnswer] = useState("");
+  const [question, setQuestion] = useState("");
+  const [depententPlayers, setDependentPlayers] = useState([
+    { name: "Gotcha", avatarColour: "aqua" },
+  ]);
   const [isDisabled, setIsDisabled] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const setCaretPosition = (el, position) => {
     const range = document.createRange();
@@ -45,18 +54,46 @@ const Answer = ({ setSubmitted }) => {
     textAreaRef.current.focus();
   };
 
-  const submitAnswerHandler = () => {
-    console.log(answer, " has been submitted");
-    setSubmitted(true);
+  const submitAnswerHandler = async () => {
+    setIsLoading(true);
+    const submitAnswerPayload = {
+      roomId,
+      userName: name,
+      answer,
+    };
+    const submitAnswer = await axios.post("/triviaManagement/submitAnswer", {
+      ...submitAnswerPayload,
+    });
+    setIsLoading((loading) => {
+      console.log(submitAnswer);
+      setSubmitted(true);
+      return false;
+    });
   };
+
+  const getQuestion = async () => {
+    setIsLoading(true);
+    const questionDetails = await axios.get(
+      `/triviaManagement/getQuestion?roomId=${roomId}&userName=${name}`
+    );
+    setQuestion(questionDetails?.data?.trivia);
+    setDependentPlayers(questionDetails?.data?.associated_users);
+  };
+
+  useEffect(() => {
+    if (roomId && name) getQuestion();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (question !== "") setIsLoading(false);
+  }, [question]);
 
   return (
     <div className="answer-container">
+      {isLoading && <Loader />}
       <TruthHeader>The Truth Comes Out Teaser</TruthHeader>
-      <TruthQuestion
-        question={questonquestion}
-        dependentDependent={dependentDependent}
-      />
+      <TruthQuestion question={question} dependentPlayers={depententPlayers} />
       <div className="answer-input--container">
         <div
           className="answer-input--text-container"
