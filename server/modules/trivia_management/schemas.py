@@ -1,8 +1,14 @@
 from pydantic import BaseModel
 from typing import List
 
-class RoomData(BaseModel):
+
+class AnswerData(BaseModel):
     roomId: str
-    userId: str
-    name: str
-    rounds: int
+    userName: str
+    answer: str
+
+
+class SelectOptionData(BaseModel):
+    roomId: str
+    userName: str
+    selectedAnswerOfUser: str
