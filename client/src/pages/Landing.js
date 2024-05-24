@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import CommonButton from "../Components/UI/CommonButton";
 import DetailsForm from "../Components/DetailsForm/DetailsForm";
 import axios from "../Axios/Axios";
 import Loader from "../Components/UI/Loader";
 
 const Landing = () => {
+  const { joinRoom } = useParams();
+
   const [avatarInitial, setAvatarInitial] = useState("");
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -25,12 +27,19 @@ const Landing = () => {
     }
   };
 
-  // const joinExistingRoom = async () => {
-  //   setIsLoading(false);
-  //   const joinRoomBody = {userName: avatarInitial, avatarColour: bgColor, roomId: "cake clog"};
-  //   const getRoomDetails = await axios.get('/roomManagement/joinRoom', {...joinRoomBody});
-  //   setRoomDetails(getRoomDetails);
-  // }
+  const joinExistingRoom = async () => {
+    setIsLoading(true);
+    console.log(joinRoom);
+    const joinRoomBody = {
+      userName: avatarInitial,
+      avatarColour: bgColor,
+      roomId: joinRoom.toLowerCase(),
+    };
+    const getRoomDetails = await axios.post("/roomManagement/joinRoom", {
+      ...joinRoomBody,
+    });
+    setRoomDetails(getRoomDetails);
+  };
 
   const startNewRoom = async () => {
     setIsLoading(true);
@@ -43,11 +52,11 @@ const Landing = () => {
     let isValid = inputCheck();
     if (isValid) {
 
-      // setIsAdmin(false);
-      // console.log(avatarInitial + " Proceed to Join a game");
-      // joinExistingRoom(); //join the room id provided!!!!
-    
-      navigate(`/join-room/${avatarInitial}/${bgColor}`)
+      setIsAdmin(false);
+      console.log(avatarInitial + " Proceed to Join a game");
+      const joinRoomId = joinRoom || false;
+      if (joinRoomId) joinExistingRoom(); //join the room id provided!!!!
+      else  navigate(`/join-room/${avatarInitial}/${bgColor}`);
     } else {
       console.log("Error occured while trying to join a game");
     }

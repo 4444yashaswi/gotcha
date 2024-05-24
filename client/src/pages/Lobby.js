@@ -7,7 +7,7 @@ import axios from "../Axios/Axios";
 import { IoIosArrowBack } from "react-icons/io";
 import RoomCode from "../Components/UI/RoomCode";
 
-const Lobby = ({ setRoomId }) => {
+const Lobby = ({ setJoinGame }) => {
   // const playerList = [
   //   { name: "OJ", avatarColor: "blue", isReady: true },
   //   { name: "Tera Baap", avatarColor: "orange", isReady: true },
@@ -65,7 +65,7 @@ const Lobby = ({ setRoomId }) => {
 
   useEffect(() => {
     setPlayers([{ name, avatarColor, isReady, key: name }, ...playerList]);
-    setRoomId(roomId);
+    setJoinGame(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -160,8 +160,9 @@ const Lobby = ({ setRoomId }) => {
             isPrimary
             style={{ position: "absolute", left: "5%", width: "90vw" }}
             functionality={readyBtnHandler}
+            isDisabled={!isReady}
           >
-            {isReady ? "Ready!" : "Are you Ready?"}
+            {isReady ? "Waiting for others..." : "Are you Ready?"}
           </CommonButton>
         </div>
       </div>

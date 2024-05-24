@@ -4,58 +4,44 @@ import PlayerDetailsCard from "../Components/UI/PlayerDetails/PlayerDetailsCard"
 import PlayerScoreCard from "../Components/UI/PlayerDetails/PlayerScoreCard";
 import CommonButton from "../Components/UI/CommonButton";
 import WaitingAnimation from "../Components/UI/WaitingAnimation";
+import { useNavigate } from "react-router-dom";
 
-const Scores = () => {
-  const playersSelectedYourAnswerList = [
-    { name: "OJ", avatarColor: "blue", isReady: true },
-    { name: "Tera Baap", avatarColor: "orange", isReady: true },
-    // { name: "Yashaswi", avatarColor: "lightgreen", isReady: false },
-    // { name: "Tosh :)", avatarColor: "pink", isReady: true },
-    // { name: "Singh", avatarColor: "purple", isReady: false },
-    // { name: "Ohm", avatarColor: "yellowgreen", isReady: true },
-    // { name: "Goyal", avatarColor: "pink", isReady: true },
-    // { name: "Omar", avatarColor: "orange", isReady: true },
-  ];
+const Scores = ({
+  playersSelectedYourAnswer,
+  allAnswers,
+  roundScores,
+  leaders,
+  round,
+  totalRounds,
+}) => {
 
-  const allAnswersList = [
-    {
-      name: "Yash",
-      avatarColor: "pink",
-      answer: "party animal hona",
-      pickedTimes: 2,
-    },
-    {
-      name: "Tera Baap",
-      avatarColor: "orange",
-      answer: "Lmao nvm",
-      pickedTimes: 0,
-    },
-    {
-      name: "OJ",
-      avatarColor: "blue",
-      answer: "Being the best coder",
-      pickedTimes: 1,
-    },
-    {
-      name: "Tosh",
-      avatarColor: "purple",
-      answer: "I will win",
-      pickedTimes: 0,
-    },
-  ];
-
-  const roundScoreList = [
-    { name: "Yash", avatarColor: "pink", isReady: true, score: 5 },
-    { name: "Tosh", avatarColor: "purple", isReady: false, score: 5 },
-    { name: "OJ", avatarColor: "blue", isReady: false, score: 4 },
-    { name: "Tera Baap", avatarColor: "orange", isReady: true, score: 3 },
-  ];
+  const navigate = useNavigate();
 
   const [isReadyForNextRound, setIsReadyForNextRound] = useState(false);
 
+  const getLeaderPrompt = (leaders) => {
+    let returnPrompt = leaders?.[0]?.name;
+    if (leaders?.length === 1) return returnPrompt + " is in the lead!";
+    for (let i = 1; i < leaders?.length; i++)
+      returnPrompt += " and " + leaders?.[i]?.name;
+    return returnPrompt + " are tied for the lead!";
+  };
+
   const handleReadyBtn = () => {
-    console.log("The player is ready for the next round");
-    setIsReadyForNextRound(true);
+    if (round !== totalRounds) {
+      console.log("The player is ready for the next round");
+      setIsReadyForNextRound(true);
+    } else {
+      console.log("go to the gameResults page");
+      const state = {
+        playerScores: roundScores,
+        leaders: leaders,
+      }
+      navigate(
+        '/result',
+        { state: state }
+      );
+    }
   };
 
   return (
@@ -64,20 +50,22 @@ const Scores = () => {
         textStyle={{ fontSize: "3vh", fontWeight: "600" }}
         btnStyle={{ top: "8.7vh" }}
       >
-        Results: round 2/5
+        Results: round {round}/{totalRounds}
       </TruthHeader>
       <div className="scores-list--container">
         <div className="scores--picked-yours-heading">
-          {playersSelectedYourAnswerList.length > 0
-            ? `${playersSelectedYourAnswerList.length} players liked `
+          {playersSelectedYourAnswer?.length > 0
+            ? `${playersSelectedYourAnswer?.length} player${
+                playersSelectedYourAnswer?.length !== 1 ? "s" : ""
+              } liked `
             : "No one picked "}
           your answer
         </div>
         <div className="scored--picked-yours-players">
-          {playersSelectedYourAnswerList.map((player) => (
+          {playersSelectedYourAnswer?.map((player) => (
             <PlayerDetailsCard
               name={player.name}
-              avatarColor={player.avatarColor}
+              avatarColor={player.avatarColour}
               key={player.name}
             />
           ))}
@@ -86,25 +74,25 @@ const Scores = () => {
           How many times was each answer picked?
         </div>
         <div className="scores-list--answers-container">
-          {allAnswersList.map((answer) => (
+          {allAnswers.map((answer) => (
             <PlayerScoreCard
               isAnswer
-              name={answer.name}
-              avatarColor={answer.avatarColor}
+              name={answer.userName}
+              avatarColor={answer.avatarColour}
               answer={answer.answer}
-              picked={answer.pickedTimes}
+              picked={answer.pickedByCount}
             />
           ))}
         </div>
         <div className="scores--score-heading">Scores</div>
         <div className="scores-list--heading">
-          Yash and Tosh are tied for the lead!
+          {getLeaderPrompt(leaders)}
         </div>
         <div className="scores-list--players-container">
-          {roundScoreList.map((player) => (
+          {roundScores.map((player) => (
             <PlayerScoreCard
               name={player.name}
-              avatarColor={player.avatarColor}
+              avatarColor={player.avatarColour}
               isReady={player.isReady}
               score={player.score}
             />
@@ -127,12 +115,14 @@ const Scores = () => {
           </>
         ) : (
           <>
-            <div className="scores-list--footer-not-ready-text">
-              Are you ready for the next round?
-            </div>
+            {round !== totalRounds && (
+              <div className="scores-list--footer-not-ready-text">
+                Are you ready for the next round?
+              </div>
+            )}
             <div className="scores-list--footer-ready-btn">
               <CommonButton isPrimary functionality={handleReadyBtn}>
-                Ready!
+                {round !== totalRounds ? "Ready!" : "Game Results"}
               </CommonButton>
             </div>
           </>
