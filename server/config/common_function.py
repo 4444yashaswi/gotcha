@@ -4,7 +4,7 @@ from config.config import SocketModel
 
 
 # Room and user validation function
-def room_user_validation(room_id, user_name, db):
+async def room_user_validation(room_id, user_name, db):
     rooms_db = db["rooms"]
 
     room = rooms_db.find_one({"id": room_id})
@@ -19,10 +19,23 @@ def room_user_validation(room_id, user_name, db):
     
     return room
 
+async def room_admin_validation(room_id, user_name, db):
+    rooms_db = db["rooms"]
+
+    room = rooms_db.find_one({"id": room_id})
+    
+    if room is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Room not found with id: {room_id}")
+    
+    if user_name:
+        if user_name != room["admin"]:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"User {user_name} not admin for room with id: {room_id}")
+    
+    return room
 
 
 # Function update flag and check all users in the game to update room status
-def update_user_room_status(user_data: SocketModel, room, db):
+async def update_user_room_status(user_data: SocketModel, room, db):
     room_db = db["rooms"]
     
     # check room flag for relevant info

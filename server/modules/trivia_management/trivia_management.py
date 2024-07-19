@@ -19,21 +19,22 @@ router = APIRouter(
 )
 
 logger = logging.getLogger(__name__)
+db = get_db()
 
 
-def get_random_users(user_list: List[dict], count: int) -> List[dict]:
+async def get_random_users(user_list: List[dict], count: int) -> List[dict]:
     # return random.sample(user_list, count)
     return random.sample([{"name": user["name"], "avatarColour": user["avatar_colour"]} for user in user_list], count) # Trivia associated users
 
 
 
 @router.get("/getQuestion")
-def get_question(request: Request, roomId: str, userName: str, db = Depends(get_db)):
+async def get_question(request: Request, roomId: str, userName: str):
     try:
         room_db = db["rooms"]
 
         # Validate room and user
-        room = room_user_validation(room_id=roomId, user_name=userName, db=db)
+        room = await room_user_validation(room_id=roomId, user_name=userName, db=db)
         
         # Validate room status in Submit
         if room["room_status"] not in [Constants.ROOM_STATUS_SUBMIT, Constants.ROOM_STATUS_SELECT]:
@@ -85,12 +86,12 @@ def get_question(request: Request, roomId: str, userName: str, db = Depends(get_
 
 
 @router.post("/submitAnswer")
-def submit_answer(request: Request, answer_data: schemas.AnswerData, db = Depends(get_db)):
+async def submit_answer(request: Request, answer_data: schemas.AnswerData):
     try:
         room_db = db["rooms"]
 
         # Validate room and user
-        room = room_user_validation(room_id=answer_data.roomId, user_name=answer_data.userName, db=db)
+        room = await room_user_validation(room_id=answer_data.roomId, user_name=answer_data.userName, db=db)
 
         # Validate room status in Submit
         if room["room_status"] != Constants.ROOM_STATUS_SUBMIT:
@@ -140,12 +141,12 @@ def submit_answer(request: Request, answer_data: schemas.AnswerData, db = Depend
 
 
 @router.get("/getOptions")
-def get_options(request: Request, roomId: str, userName: str, db = Depends(get_db)):
+async def get_options(request: Request, roomId: str, userName: str):
     try:
         room_db = db["rooms"]
 
         # Validate room and user
-        room = room_user_validation(room_id=roomId, user_name=userName, db=db)
+        room = await room_user_validation(room_id=roomId, user_name=userName, db=db)
 
         # Validate room status in Select
         if room["room_status"] != Constants.ROOM_STATUS_SELECT:
@@ -179,12 +180,12 @@ def get_options(request: Request, roomId: str, userName: str, db = Depends(get_d
 
 
 @router.post("/selectOption")
-def select_option(Request: Request, option_data: schemas.SelectOptionData, db = Depends(get_db)):
+async def select_option(Request: Request, option_data: schemas.SelectOptionData):
     try:
         room_db = db["rooms"]
 
         # Validate room and user
-        room = room_user_validation(room_id=option_data.roomId, user_name=option_data.userName, db=db)
+        room = await room_user_validation(room_id=option_data.roomId, user_name=option_data.userName, db=db)
 
         # Validate room status in Select
         if room["room_status"] != Constants.ROOM_STATUS_SELECT:
@@ -248,12 +249,12 @@ def select_option(Request: Request, option_data: schemas.SelectOptionData, db = 
 
 # API to get round score
 @router.get("/roundScore")
-def get_round_score(request: Request, roomId: str, userName: str, db = Depends(get_db)):
+async def get_round_score(request: Request, roomId: str, userName: str):
     try:
         room_db = db["rooms"]
 
         # Validate room and user
-        room = room_user_validation(room_id=roomId, user_name=userName, db=db)
+        room = await room_user_validation(room_id=roomId, user_name=userName, db=db)
 
         answer_list = []
         user_list = []
