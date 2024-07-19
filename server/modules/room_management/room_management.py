@@ -17,10 +17,11 @@ router = APIRouter(
 )
 
 logger = logging.getLogger(__name__)
+db = get_db()
 
 # Dummy API
 @router.get("/hit")
-def dummy_api(request: Request, name: str):
+async def dummy_api(request: Request, name: str):
      try:
         response = {"detail": f"Hello {name}", "roomId": "code chef"}
         return response
@@ -33,7 +34,7 @@ def dummy_api(request: Request, name: str):
 
 
 # API to create & join a room
-def generate_user_object(user_name, avatar_colour):
+async def generate_user_object(user_name, avatar_colour):
     user_object = models.User(
         name=user_name,
         avatar_colour=avatar_colour
@@ -44,7 +45,7 @@ def generate_user_object(user_name, avatar_colour):
 
 # API to join a room
 @router.post("/joinRoom")
-def join_room(request: Request, room_data: schemas.JoinRoomData, db = Depends(get_db)):
+async def join_room(request: Request, room_data: schemas.JoinRoomData):
     try:
         rooms_db = db["rooms"]
 
@@ -91,7 +92,7 @@ def join_room(request: Request, room_data: schemas.JoinRoomData, db = Depends(ge
 
 
 
-def generate_random_trivia_questions_list(rounds, db):
+async def generate_random_trivia_questions_list(rounds, db):
     trivias_db = db["trivias"]
     
     # Create an aggregation pipeline with the $sample stage
@@ -109,7 +110,7 @@ def generate_random_trivia_questions_list(rounds, db):
 
 
 @router.post("/createRoom")
-def create_room(request: Request, room_data: schemas.CreateRoomData, db = Depends(get_db)):
+async def create_room(request: Request, room_data: schemas.CreateRoomData):
     try:
         rooms_db = db["rooms"]
         
@@ -155,12 +156,12 @@ def create_room(request: Request, room_data: schemas.CreateRoomData, db = Depend
 
 # API to update rounds
 @router.put("/updateRounds")
-def update_rounds(request: Request, room_data: schemas.UpdateRoundData, db = Depends(get_db)):
+async def update_rounds(request: Request, room_data: schemas.UpdateRoundData):
     try:        
         rooms_db = db["rooms"]
 
         # Validate room and user
-        room = room_user_validation(room_id=room_data.roomId, user_name=room_data.userName, db=db)
+        room = await room_user_validation(room_id=room_data.roomId, user_name=room_data.userName, db=db)
         
         # Validate room status in Lobby
         if room["room_status"] != Constants.ROOM_STATUS_LOBBY:
@@ -193,22 +194,23 @@ def update_rounds(request: Request, room_data: schemas.UpdateRoundData, db = Dep
 
 # API to get user list with required status
 @router.get("/userList")
-def get_user_list(request: Request, roomId: str, userName: str, flag: Literal["Ready", "Submit", "Select"], db = Depends(get_db)):
+async def get_user_list(request: Request, roomId: str, userName: str, flag: Literal["Ready", "Submit", "Select"]):
     try:
         # Validate room and user
-        room = room_user_validation(room_id=roomId, user_name=userName, db=db)
-        
+        print(1)
+        room = await room_user_validation(room_id=roomId, user_name=userName, db=db)
+        print(2)
         user_list = [{
             "name": user["name"],
             "avatarColour": user["avatar_colour"],
             "status": user[Constants.USER_STATUS_FLAG_MAPPING[flag]]
         } for user in room["user_list"]]
-
+        print(3)
         response = {
             "userList": user_list,
             "roomId": roomId
         }
-
+        print(4)
         return response
 
     except HTTPException as e:
