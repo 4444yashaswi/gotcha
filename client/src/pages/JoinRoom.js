@@ -94,8 +94,9 @@ const JoinRoom = () => {
     if (roomDetails) {
       setIsLoading(false);
       const existingPlayers = roomDetails?.data?.playersList || [];
+      const params = new URLSearchParams({ roomId: roomDetails?.data?.roomId, userName: name });
       navigate(
-        `/lobby/${roomDetails?.data?.roomId}/${name}/${avatarColor}/false`,
+        `/lobby/${roomDetails?.data?.roomId}/${name}/${avatarColor}/false?${params.toString()}`,
         { state: existingPlayers }
       );
     }
