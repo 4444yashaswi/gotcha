@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom";
 import CommonButton from "../Components/UI/CommonButton";
 import DetailsForm from "../Components/DetailsForm/DetailsForm";
 import axios from "../Axios/Axios";
@@ -43,20 +43,25 @@ const Landing = () => {
 
   const startNewRoom = async () => {
     setIsLoading(true);
-    const newRoomBody = {userName: avatarInitial, avatarColour: bgColor, rounds: 5};
-    const getRoomDetails = await axios.post('/roomManagement/createRoom', {...newRoomBody});
+    const newRoomBody = {
+      userName: avatarInitial,
+      avatarColour: bgColor,
+      rounds: 5,
+    };
+    const getRoomDetails = await axios.post("/roomManagement/createRoom", {
+      ...newRoomBody,
+    });
     setRoomDetails(getRoomDetails);
-  }
+  };
 
   const joinGameHandler = () => {
     let isValid = inputCheck();
     if (isValid) {
-
       setIsAdmin(false);
       console.log(avatarInitial + " Proceed to Join a game");
       const joinRoomId = joinRoom || false;
       if (joinRoomId) joinExistingRoom(); //join the room id provided!!!!
-      else  navigate(`/join-room/${avatarInitial}/${bgColor}`);
+      else navigate(`/join-room/${avatarInitial}/${bgColor}`);
     } else {
       console.log("Error occured while trying to join a game");
     }
@@ -77,16 +82,22 @@ const Landing = () => {
     if (roomDetails) {
       setIsLoading(false);
       const existingPlayers = roomDetails?.data?.playersList || [];
-      navigate(`/lobby/${roomDetails?.data?.roomId}/${avatarInitial}/${bgColor}/${isAdmin}`, {state: existingPlayers});
+      const params = new URLSearchParams({ roomId: roomDetails?.data?.roomId, userName: avatarInitial });
+      navigate(
+        `/lobby/${
+          roomDetails?.data?.roomId
+        }/${avatarInitial}/${bgColor}/${isAdmin}?${params.toString()}`,
+        { state: existingPlayers }
+      );
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomDetails]);
 
   useEffect(() => {
     return () => {
       setRoomDetails(null);
-    }
-  },[]);
+    };
+  }, []);
 
   return (
     <div className="landing-page--container">
