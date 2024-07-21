@@ -1,3 +1,4 @@
+import asyncio
 from fastapi import FastAPI
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
@@ -36,9 +37,4 @@ app.include_router(main_websocket.router)
 
 if __name__ == "__main__":
     print(settings.title)
-    uvicorn.run(
-        "main:app",
-        host="0.0.0.0",
-        port=Constants.DEFAULT_PORT,
-        reload=True, log_config="logger.conf"
-    )
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True, log_config="logger.conf")

@@ -16,11 +16,11 @@ router = APIRouter(
 )
 
 logger = logging.getLogger(__name__)
-
+db = get_db()
 
 
 @router.post("/addTrivia")
-def create_trivia(request: Request, addDummy: Optional[bool], triviaData: Optional[schemas.Trivia] = None, db = Depends(get_db)):
+async def create_trivia(request: Request, addDummy: Optional[bool], triviaData: Optional[schemas.Trivia] = None):
     try:
         trivias_db = db["trivias"]
         
