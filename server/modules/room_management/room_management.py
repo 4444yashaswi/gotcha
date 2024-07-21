@@ -80,7 +80,6 @@ async def join_room(request: Request, room_data: schemas.JoinRoomData):
         new_user_list.append(user)
         
         rooms_db.update_one({"id": room["id"]}, {"$set": {"user_list": new_user_list}})
-        print("here")
         return response
     
     except HTTPException as e:
@@ -198,20 +197,16 @@ async def update_rounds(request: Request, room_data: schemas.UpdateRoundData):
 async def get_user_list(request: Request, roomId: str, userName: str, flag: Literal["Ready", "Submit", "Select"]):
     try:
         # Validate room and user
-        print(1)
         room = await room_user_validation(room_id=roomId, user_name=userName, db=db)
-        print(2)
         user_list = [{
             "name": user["name"],
             "avatarColour": user["avatar_colour"],
             "status": user[Constants.USER_STATUS_FLAG_MAPPING[flag]]
         } for user in room["user_list"]]
-        print(3)
         response = {
             "userList": user_list,
             "roomId": roomId
         }
-        print(4)
         return response
 
     except HTTPException as e:

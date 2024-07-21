@@ -6,8 +6,16 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import axios from "../Axios/Axios";
 import { IoIosArrowBack } from "react-icons/io";
 import RoomCode from "../Components/UI/RoomCode";
+import CONSTANTS from "../Constants/Constants";
 
-const Lobby = ({ setJoinGame }) => {
+const Lobby = ({
+  setJoinGame,
+  joinedRoomPlayer,
+  leftRoomPlayer,
+  isReadyPlayer,
+  setSendInformation,
+}) => {
+  const { READY } = CONSTANTS;
   // const playerList = [
   //   { name: "OJ", avatarColor: "blue", isReady: true },
   //   { name: "Tera Baap", avatarColor: "orange", isReady: true },
@@ -36,6 +44,13 @@ const Lobby = ({ setJoinGame }) => {
     // const response = await axios.get(`/roomManagement/hit?name=${name}`);
     // console.log(response);
     setIsReady((isReady) => !isReady);
+    const information = {
+      flag: READY,
+      userName: name,
+      avatarColour: avatarColor,
+      isAll: false,
+    };
+    setSendInformation(information);
   };
 
   const roundsClickHandler = async (round) => {
@@ -65,9 +80,35 @@ const Lobby = ({ setJoinGame }) => {
 
   useEffect(() => {
     setPlayers([{ name, avatarColor, isReady, key: name }, ...playerList]);
-    setJoinGame(true);
+    setTimeout(() => setJoinGame(roomId), 500);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (joinedRoomPlayer) {
+      setPlayers((players) => [...players, { ...joinedRoomPlayer }]);
+    }
+  }, [joinedRoomPlayer]);
+
+  useEffect(() => {
+    if (leftRoomPlayer) {
+      setPlayers((players) =>
+        players.filter((player) => player?.name !== leftRoomPlayer?.name)
+      );
+    }
+  }, [leftRoomPlayer]);
+
+  useEffect(() => {
+    if (isReadyPlayer) {
+      setPlayers((players) =>
+        players.map((player) =>
+          player?.name === isReadyPlayer?.name
+            ? { ...isReadyPlayer }
+            : { ...player }
+        )
+      );
+    }
+  }, [isReadyPlayer]);
 
   useEffect(() => {
     setPlayers((players) =>
@@ -93,7 +134,7 @@ const Lobby = ({ setJoinGame }) => {
     return () => {
       clearTimeout(readyTimeOut);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAllReady]);
 
   return (
@@ -160,7 +201,7 @@ const Lobby = ({ setJoinGame }) => {
             isPrimary
             style={{ position: "absolute", left: "5%", width: "90vw" }}
             functionality={readyBtnHandler}
-            isDisabled={!isReady}
+            isDisabled={isReady || players?.length < 2}
           >
             {isReady ? "Waiting for others..." : "Are you Ready?"}
           </CommonButton>
