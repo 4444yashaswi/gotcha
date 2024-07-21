@@ -5,7 +5,7 @@ from config.config import settings
 import logging
 
 logger = logging.getLogger(__name__)
-client = client = MongoClient(host=settings.db_uri, serverSelectionTimeoutMS=5000)
+client = MongoClient(host=settings.db_uri, serverSelectionTimeoutMS=5000)
 db = client[settings.db_name]
 
 def get_db():

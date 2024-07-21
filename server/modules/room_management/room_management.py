@@ -73,13 +73,14 @@ async def join_room(request: Request, room_data: schemas.JoinRoomData):
             "playersList": user_list
         }
         
-        user = generate_user_object(user_name=room_data.userName, avatar_colour=room_data.avatarColour).model_dump()
+        user = await generate_user_object(user_name=room_data.userName, avatar_colour=room_data.avatarColour)
+        user = user.model_dump()
         
         new_user_list = room["user_list"]
         new_user_list.append(user)
         
         rooms_db.update_one({"id": room["id"]}, {"$set": {"user_list": new_user_list}})
-        
+        print("here")
         return response
     
     except HTTPException as e:
@@ -119,8 +120,8 @@ async def create_room(request: Request, room_data: schemas.CreateRoomData):
         while rooms_db.find_one({"id": random_name}) is not None: 
             random_name = f"{random.choice(Constants.FOUR_LETTER_WORDS)} {random.choice(Constants.FOUR_LETTER_WORDS)}"
         
-        user = generate_user_object(user_name=room_data.userName, avatar_colour=room_data.avatarColour)
-        trivia_list = generate_random_trivia_questions_list(rounds=room_data.rounds, db=db)
+        user = await generate_user_object(user_name=room_data.userName, avatar_colour=room_data.avatarColour)
+        trivia_list = await generate_random_trivia_questions_list(rounds=room_data.rounds, db=db)
 
         room = models.Room(
             id=random_name,
@@ -171,7 +172,7 @@ async def update_rounds(request: Request, room_data: schemas.UpdateRoundData):
         if room["admin"] != room_data.userName:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"{room_data.userName} not admin for {room_data.roomId}")
         
-        trivia_list = generate_random_trivia_questions_list(rounds=room_data.rounds, db=db)
+        trivia_list = await generate_random_trivia_questions_list(rounds=room_data.rounds, db=db)
         trivia_list = [list_element.model_dump() for list_element in trivia_list]
         
         rooms_db.update_one({"id": room["id"]}, {"$set": {"rounds": len(trivia_list),"trivia_list": trivia_list}})

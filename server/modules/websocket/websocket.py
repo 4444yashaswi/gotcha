@@ -10,7 +10,7 @@ from config.database import get_db
 from config.common_function import room_user_validation, room_admin_validation
 from config import models
 from . import schemas
-
+ 
 router = APIRouter(
     # prefix = "/",
     responses={404: {"description": "Not found"}}
@@ -40,7 +40,7 @@ async def websocket_listen(room_id: str, user_name: str, websocket: WebSocket):
     try:
         while True:
             message = await websocket.receive_text()
-            print(f"Received nessage from client: {message}")
+            print(f"Received message from client: {message}")
     except Exception as e:
         logger.error(f"Error in web socket: {str(e)}")
         rooms[room_id].remove(websocket)
@@ -56,7 +56,7 @@ async def publish_message(event: str, message: dict):
                 logger.error(f"Error in web socket: {str(e)}")
                 rooms[event].remove()
 
-@router.get("/trigger/{event}")
+@router.post("/trigger/{event}")
 async def trigger_events(event: str, message: dict):
     if event in rooms:
         await publish_message(event=event, message=message)
