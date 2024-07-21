@@ -34,6 +34,21 @@ async def room_admin_validation(room_id, user_name, db):
     return room
 
 
+async def get_user(room_id, user_name, db):
+    room = await room_user_validation(room_id= room_id, user_name= user_name, db= db)
+    for user in room["user_list"]:
+        if user["name"] == user_name:
+            user_obj = {
+                "name": user["name"],
+                "avatarColor": user["avatar_colour"],
+                "isReady": user["is_ready"]
+            }
+    return user_obj
+
+async def remove_user(room_id, user_name, db):
+    # ToDo: Complete code including room delete if no players left
+    pass
+
 # Function update flag and check all users in the game to update room status
 async def update_user_room_status(user_data: SocketModel, room, db):
     room_db = db["rooms"]
