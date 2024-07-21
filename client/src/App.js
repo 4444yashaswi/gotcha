@@ -8,7 +8,7 @@ import SubmitAnswer from "./pages/paired pages/SubmitAnswer";
 import SelectOption from "./pages/paired pages/SelectOption";
 import YourScore from "./pages/paired pages/YourScore";
 import GameResult from "./pages/paired pages/GameResult";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SocketConfig from "./GameConfig/SocketConfig";
 
 function App() {
@@ -34,7 +34,7 @@ function App() {
   }) => {
     if (joinedRoom) setJoinedRoomPlayer({ ...joinedRoom });
     else if (leftRoom) setLeftRoomPlayer({ ...leftRoom });
-    else if (isReady) setIsReadyPlayer({...isReady});
+    else if (isReady) setIsReadyPlayer({ ...isReady });
     else console.log("else here");
   };
 
@@ -47,8 +47,8 @@ function App() {
         setSendInformation={setSendInformation}
       />
       <Routes>
-        <Route exact path="/" element={<Landing />} />
-        <Route exact path="/landing/:joinRoom?" element={<Landing />} />
+        <Route exact path="/" element={<Landing setJoinGame={setJoinGame} />} />
+        <Route exact path="/landing/:joinRoom?" element={<Landing setJoinGame={setJoinGame} />} />
         <Route
           exact
           path="/join-room/:name/:avatarColor"

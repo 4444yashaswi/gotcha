@@ -99,6 +99,11 @@ const SocketConfig = ({ joinGame, socketHandler, sendInformation, setSendInforma
         socket.close();
       };
     }
+
+    else if(socket && webSocket) {
+        socket.close();
+        setWebSocket(null);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [joinGame]);
 
