@@ -5,7 +5,13 @@ import axios from "../../Axios/Axios";
 import Loader from "../../Components/UI/Loader";
 import { useParams } from "react-router-dom";
 
-const YourScore = () => {
+const YourScore = ({
+  setSendInformation,
+  isReadyPlayer,
+  setIsReadyPlayer,
+  isAllReady,
+  setIsAllReady,
+}) => {
   const { roomId, name } = useParams();
 
   const [isCheckingScores, setIsCheckingScores] = useState(false);
@@ -37,7 +43,7 @@ const YourScore = () => {
       let leaders = [scores?.[0]];
       for (let i = 1; i < scores?.length; i++)
         if (scores?.[0]?.score === scores?.[i]?.score)
-          leaders.append(scores?.[i]);
+          leaders = [...leaders, scores?.[i]];
       return leaders;
     });
     setYouSelected(scoreDetails?.data?.answerPicked);
@@ -67,6 +73,11 @@ const YourScore = () => {
           leaders={leaders}
           round={round}
           totalRounds={totalRounds}
+          setSendInformation={setSendInformation}
+          isReadyPlayer={isReadyPlayer}
+          setIsReadyPlayer={setIsReadyPlayer}
+          isAllReady={isAllReady}
+          setIsAllReady={setIsAllReady}
         />
       ) : (
         <YourChoice setNext={setIsCheckingScores} player={youSelected} />

@@ -5,7 +5,7 @@ import DetailsForm from "../Components/DetailsForm/DetailsForm";
 import axios from "../Axios/Axios";
 import Loader from "../Components/UI/Loader";
 
-const Landing = () => {
+const Landing = ({ setJoinGame }) => {
   const { joinRoom } = useParams();
 
   const [avatarInitial, setAvatarInitial] = useState("");
@@ -82,7 +82,10 @@ const Landing = () => {
     if (roomDetails) {
       setIsLoading(false);
       const existingPlayers = roomDetails?.data?.playersList || [];
-      const params = new URLSearchParams({ roomId: roomDetails?.data?.roomId, userName: avatarInitial });
+      const params = new URLSearchParams({
+        roomId: roomDetails?.data?.roomId,
+        userName: avatarInitial,
+      });
       navigate(
         `/lobby/${
           roomDetails?.data?.roomId
@@ -94,9 +97,11 @@ const Landing = () => {
   }, [roomDetails]);
 
   useEffect(() => {
+    setJoinGame(false);
     return () => {
       setRoomDetails(null);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

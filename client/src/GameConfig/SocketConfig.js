@@ -3,13 +3,19 @@ import { useEffect, useState } from "react";
 import CONSTANTS from "../Constants/Constants";
 import { useLocation } from "react-router-dom";
 
-const SocketConfig = ({ joinGame, socketHandler, sendInformation, setSendInformation }) => {
+const SocketConfig = ({
+  joinGame,
+  setRedirectToLanding,
+  socketHandler,
+  sendInformation,
+  setSendInformation,
+}) => {
   const { WEB_SOCKET_URL, JOINED, LEFT, READY, SUBMIT, SELECT } = CONSTANTS;
   const location = useLocation();
 
   const [isConnected, setIsConnected] = useState(false);
   const [webSocket, setWebSocket] = useState(null);
-  
+
   let socket;
 
   useEffect(() => {
@@ -48,72 +54,75 @@ const SocketConfig = ({ joinGame, socketHandler, sendInformation, setSendInforma
       socket.onclose = () => {
         setIsConnected(false);
         setWebSocket(null);
-      }
+      };
 
       socket.onmessage = (event) => {
         console.log("Message from the server : ", event?.data);
         const { flag, userName, avatarColour, isAll } = JSON.parse(event?.data);
+        console.log(flag, userName);
+        const playerDetails = {
+          name: userName,
+          avatarColor: avatarColour,
+          isReady: true,
+          isAll: isAll,
+        };
 
-        switch(flag) {
-            //case if a person joins a room:
-            case JOINED:
-                console.log(flag, userName, avatarColour);
-                const joinedRoomPlayer = {name: userName, avatarColor: avatarColour};
-                socketHandler({ joinedRoom: joinedRoomPlayer });
-                break;
+        switch (flag) {
+          //case if a person joins a room:
+          case JOINED:
+            socketHandler({ joinedRoom: { ...playerDetails, isReady: false } });
+            break;
 
-            //case if a person leaves a room:
-            case LEFT:
-                console.log(flag, userName);
-                const leftRoomPlayer = {name: userName, avatarColor: avatarColour};
-                socketHandler({leftRoom: leftRoomPlayer});
-                break;
+          //case if a person leaves a room:
+          case LEFT:
+            socketHandler({ leftRoom: { ...playerDetails, isReady: false } });
+            break;
 
-            //case if a person change their status to ready
-            case READY:
-                console.log(flag, userName);
-                const isReadyPlayer = {name: userName, avatarColor: avatarColour, isReady: true};
-                socketHandler({isReady: isReadyPlayer});
-                break;
+          //case if a person change their status to ready
+          case READY:
+            socketHandler({ isReady: playerDetails });
+            break;
 
-            //case if a person submits their answer
-            case SUBMIT:
-                console.log(flag, userName);
-                break;
+          //case if a person submits their answer
+          case SUBMIT:
+            socketHandler({ hasSubmitted: playerDetails });
+            break;
 
-            //case if a person selects an option
-            case SELECT:
-                console.log(flag, userName);
-                break;
+          //case if a person selects an option
+          case SELECT:
+            socketHandler({ hasSelected: playerDetails });
+            break;
 
-            default:
-                console.log(flag, userName, avatarColour, isAll);
+          default:
+            console.log(flag, userName, avatarColour, isAll);
         }
       };
 
       socket.onclose = () => {
         console.log("Disconnected message");
+        setRedirectToLanding((state) => !state);
       };
 
       return () => {
         socket.close();
       };
+    } else if (socket && webSocket) {
+      socket.close();
+      setWebSocket(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [joinGame]);
 
-
-
   // For sending messages
   useEffect(() => {
     console.log(webSocket);
-    if(isConnected && webSocket && sendInformation) {
-        const message = JSON.stringify(sendInformation);
-        console.log("Sending message: " + message);
-        webSocket.send(message);
-        setSendInformation(null)
+    if (isConnected && webSocket && sendInformation) {
+      const message = JSON.stringify(sendInformation);
+      console.log("Sending message: " + message);
+      webSocket.send(message);
+      setSendInformation(null);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sendInformation]);
 
   return;
