@@ -64,8 +64,13 @@ function App() {
 
   // Function for waking up the backend
   const wakeUpBackend = async () => {
-    await axios.get('/');
-  }
+    try {
+      const response = await axios.get("/");
+      console.log(response);
+    } catch (err) {
+      console.log("Server Down\n", err);
+    }
+  };
 
   useEffect(() => {
     wakeUpBackend();

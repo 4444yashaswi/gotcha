@@ -7,20 +7,30 @@ const LandingForm = ({
   avatarInitial,
   setAvatarInitial,
   bgColor,
-  setBgColor
+  setBgColor,
 }) => {
-  const [colorIndex, setColorIndex] = useState(0);
+  const [colorIndex, setColorIndex] = useState(Math.floor(Math.random() * 9));
 
-  const colorsArr = ["aqua", "lightgreen", "purple", "pink", "yellowgreen", "blue" , "orange"];
+  const colorsArr = [
+    "aqua",
+    "lightgreen",
+    "purple",
+    "pink",
+    "yellowgreen",
+    "blue",
+    "orange",
+    "black",
+    "yellow",
+  ];
 
   const switchColor = () => {
     setColorIndex((colorIndex + 1) % colorsArr.length);
   };
 
-  const inputChangeHandler = e => {
+  const inputChangeHandler = (e) => {
     setAvatarInitial(e.target.value.toUpperCase());
     setIsError(false);
-  }
+  };
 
   useEffect(() => {
     setBgColor(colorsArr[colorIndex]);
