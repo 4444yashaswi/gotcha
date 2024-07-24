@@ -10,6 +10,7 @@ import YourScore from "./pages/paired pages/YourScore";
 import GameResult from "./pages/paired pages/GameResult";
 import { useEffect, useState } from "react";
 import SocketConfig from "./GameConfig/SocketConfig";
+import axios from "./Axios/Axios";
 
 function App() {
   const [redirectToLanding, setRedirectToLanding] = useState(false);
@@ -60,6 +61,15 @@ function App() {
     navigate("/landing");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [redirectToLanding]);
+
+  // Function for waking up the backend
+  const wakeUpBackend = async () => {
+    await axios.get('/');
+  }
+
+  useEffect(() => {
+    wakeUpBackend();
+  }, []);
 
   return (
     <div>
