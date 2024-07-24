@@ -4,11 +4,13 @@ from typing import List
 import logging
 import random
 
-from config.common_function import room_user_validation
+from config.common_function import room_user_validation, update_user_room_status, get_user
 from config.config import Constants
+from config.config import SocketModel
 from config.config import settings
 from config.database import get_db
 from config import models
+from modules.websocket.websocket import publish_message
 from . import schemas
 import traceback
 
@@ -42,14 +44,14 @@ async def get_question(request: Request, roomId: str, userName: str):
         
         trivia = room["trivia_list"][room["current_round"] - 1]
         
-        if not room["trivia_associated_users"]: # ToDo: Empty out trivia associated users while moving to next screens
+        if not room["trivia_associated_users"]:
             required_user_count = trivia["trivia"].count(Constants.USER_NAME_PLACEHOLDER)
             user_list = room["user_list"]
 
             if required_user_count > len(user_list):
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Not enough users in the room to assign to the trivia question")
             
-            selected_users = get_random_users(user_list, required_user_count)
+            selected_users = await get_random_users(user_list, required_user_count)
 
             room_db.update_one({"id": roomId}, {"$set": {"trivia_associated_users": selected_users}})
         
@@ -92,6 +94,7 @@ async def submit_answer(request: Request, answer_data: schemas.AnswerData):
 
         # Validate room and user
         room = await room_user_validation(room_id=answer_data.roomId, user_name=answer_data.userName, db=db)
+        current_user = await get_user(room_id=answer_data.roomId, user_name=answer_data.userName, db=db)
 
         # Validate room status in Submit
         if room["room_status"] != Constants.ROOM_STATUS_SUBMIT:
@@ -124,6 +127,16 @@ async def submit_answer(request: Request, answer_data: schemas.AnswerData):
             "totalRounds": room["rounds"],
             "detail": "Answer submitted successfully!"
         }
+
+        socket_response = await update_user_room_status(
+            user_data=SocketModel(
+                roomId= answer_data.roomId,
+                userName= answer_data.userName,
+                avatarColour= current_user["avatarColour"],
+                flag= "SUBMIT",
+                isAll= False
+            ), room= room, db= db)
+        await publish_message(event=answer_data.roomId, message=socket_response.model_dump())
 
         return response
 
@@ -186,6 +199,7 @@ async def select_option(Request: Request, option_data: schemas.SelectOptionData)
 
         # Validate room and user
         room = await room_user_validation(room_id=option_data.roomId, user_name=option_data.userName, db=db)
+        current_user = await get_user(room_id=option_data.roomId, user_name=option_data.userName, db=db)
 
         # Validate room status in Select
         if room["room_status"] != Constants.ROOM_STATUS_SELECT:
@@ -201,28 +215,39 @@ async def select_option(Request: Request, option_data: schemas.SelectOptionData)
         
         if update_user["has_selected"] == True:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User already selected the option")
-
+        answer = []
         user_found = False
         for existing_user in room["user_list"]:
             if existing_user["name"] == option_data.selectedAnswerOfUser:
                 user_found = True
                 answer = existing_user["answer"]
+
+                # Update the answer and user information
                 update_user["has_selected"] = True
                 update_user["answer"]["picked"] = existing_user["name"]
+
+                # Append to the picked_by list and update the round_score
                 answer["picked_by"].append({"name": update_user["name"], "avatar_colour": update_user["avatar_colour"]})
                 answer["round_score"] += 1
                 user_score = existing_user["score"] + 1
-                # update update_user
+
+                # Update update_user in the database
                 room_db.update_one(
                     {"id": option_data.roomId, "user_list.name": update_user["name"]},
-                    {"$set": {"user_list.$": update_user}}
+                    {"$set": {
+                        "user_list.$.has_selected": True,
+                        "user_list.$.answer.picked": existing_user["name"]
+                    }}
                 )
-                
 
-                # update existing user -> answer
+                # Update existing user -> answer in the database
                 room_db.update_one(
-                    {"id": option_data.roomId, "user_list.name": option_data.userName},
-                    {"$set": {"user_list.$.answer": answer, "user_list.$.score": user_score}}
+                    {"id": option_data.roomId, "user_list.name": existing_user["name"]},
+                    {"$set": {
+                        "user_list.$.answer.picked_by": answer["picked_by"],
+                        "user_list.$.answer.round_score": answer["round_score"],
+                        "user_list.$.score": user_score
+                    }}
                 )
 
                 response = {
@@ -231,6 +256,21 @@ async def select_option(Request: Request, option_data: schemas.SelectOptionData)
                     "totalRounds": room["rounds"],
                     "detail": "Option selected successfully!"
                 }
+                
+                print("Update_User:", update_user)
+                print("Existing User:", existing_user)
+                
+                socket_response = await update_user_room_status(
+                    user_data=SocketModel(
+                        roomId= option_data.roomId,
+                        userName= option_data.userName,
+                        avatarColour= current_user["avatarColour"],
+                        flag= "SELECT",
+                        isAll= False
+                    ), room= room, db= db)
+                await publish_message(event=option_data.roomId, message=socket_response.model_dump())
+
+                return response
 
         if not user_found:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Answer by user {option_data.selectedAnswerOfUser} not found")
@@ -261,7 +301,7 @@ async def get_round_score(request: Request, roomId: str, userName: str):
 
         response = {
             "roomId": roomId,
-            "round": room["current_round"],
+            "round": room["current_round"] - 1,
             "totalRounds": room["rounds"]
         }
 

@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TruthHeader from "../Components/TruthComesOutComponents/TruthHeader";
 import PlayerDetailsCard from "../Components/UI/PlayerDetails/PlayerDetailsCard";
 import PlayerScoreCard from "../Components/UI/PlayerDetails/PlayerScoreCard";
 import CommonButton from "../Components/UI/CommonButton";
 import WaitingAnimation from "../Components/UI/WaitingAnimation";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import CONSTANTS from "../Constants/Constants";
 
 const Scores = ({
   playersSelectedYourAnswer,
@@ -13,11 +14,19 @@ const Scores = ({
   leaders,
   round,
   totalRounds,
+  setSendInformation,
+  isReadyPlayer,
+  setIsReadyPlayer,
+  isAllReady,
+  setIsAllReady,
 }) => {
-
+  const { READY } = CONSTANTS;
   const navigate = useNavigate();
 
+  const { name, roomId } = useParams();
+
   const [isReadyForNextRound, setIsReadyForNextRound] = useState(false);
+  const [playerRoundScores, setPlayerRoundScores] = useState([...roundScores]);
 
   const getLeaderPrompt = (leaders) => {
     let returnPrompt = leaders?.[0]?.name;
@@ -31,18 +40,54 @@ const Scores = ({
     if (round !== totalRounds) {
       console.log("The player is ready for the next round");
       setIsReadyForNextRound(true);
+      const information = {
+        flag: READY,
+        userName: name,
+        avatarColour: "N/A",
+        isAll: false,
+      };
+      setSendInformation(information);
     } else {
       console.log("go to the gameResults page");
       const state = {
         playerScores: roundScores,
         leaders: leaders,
-      }
-      navigate(
-        '/result',
-        { state: state }
-      );
+      };
+      navigate("/result", { state: state });
     }
   };
+
+  useEffect(() => {
+    if (isReadyPlayer) {
+      setPlayerRoundScores((players) =>
+        players.map((player) =>
+          player?.name === isReadyPlayer?.name
+            ? { ...player, isReady: true }
+            : { ...player }
+        )
+      );
+    }
+  }, [isReadyPlayer]);
+
+  useEffect(() => {
+    const readyTimeOut = setTimeout(() => {
+      if (isAllReady)
+        setTimeout(() => navigate(`/answer/${roomId}/${name}`), 100);
+    }, 3000);
+
+    return () => {
+      clearTimeout(readyTimeOut);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAllReady]);
+
+  useEffect(() => {
+    return () => {
+      setIsAllReady(false);
+      setIsReadyPlayer(false);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="scores-container">
@@ -85,11 +130,9 @@ const Scores = ({
           ))}
         </div>
         <div className="scores--score-heading">Scores</div>
-        <div className="scores-list--heading">
-          {getLeaderPrompt(leaders)}
-        </div>
+        <div className="scores-list--heading">{getLeaderPrompt(leaders)}</div>
         <div className="scores-list--players-container">
-          {roundScores.map((player) => (
+          {playerRoundScores.map((player) => (
             <PlayerScoreCard
               name={player.name}
               avatarColor={player.avatarColour}

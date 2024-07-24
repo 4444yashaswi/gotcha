@@ -8,7 +8,11 @@ const CONSTANTS = {
   LEFT: "LEAVE",
   READY: "READY",
   SUBMIT: "SUBMIT",
-  SELECT: "SELECT"
+  SELECT: "SELECT",
+
+  // Room Status Flags
+  SUBMIT_STATUS: "Submit",
+  SELECT_STATUS: "Select",
 };
 
 export default CONSTANTS;

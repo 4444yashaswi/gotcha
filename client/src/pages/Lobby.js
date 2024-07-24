@@ -13,6 +13,9 @@ const Lobby = ({
   joinedRoomPlayer,
   leftRoomPlayer,
   isReadyPlayer,
+  isAllReady,
+  setIsReadyPlayer,
+  setIsAllReady,
   setSendInformation,
 }) => {
   const { READY } = CONSTANTS;
@@ -34,7 +37,7 @@ const Lobby = ({
   const [noOfRounds, setNoOfRounds] = useState("5");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isReady, setIsReady] = useState(false);
-  const [isAllReady, setIsAllReady] = useState(false);
+  // const [isAllReady, setIsAllReady] = useState(false); Should get from App.js
   const [players, setPlayers] = useState([]);
 
   const navigate = useNavigate();
@@ -80,7 +83,8 @@ const Lobby = ({
 
   useEffect(() => {
     setPlayers([{ name, avatarColor, isReady, key: name }, ...playerList]);
-    setTimeout(() => setJoinGame(roomId), 500);
+    setJoinGame(roomId);
+    // setTimeout(() => setJoinGame(roomId), 500);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -120,22 +124,30 @@ const Lobby = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady]);
 
-  useEffect(() => {
-    let isTempAllReady = true;
-    players.map(({ isReady }) => (isTempAllReady = isTempAllReady && isReady));
-    setIsAllReady(isTempAllReady);
-  }, [players]);
+  // useEffect(() => {
+  //   let isTempAllReady = true;
+  //   players.map(({ isReady }) => (isTempAllReady = isTempAllReady && isReady));
+  //   setIsAllReady(isTempAllReady);
+  // }, [players]);
 
   useEffect(() => {
     const readyTimeOut = setTimeout(() => {
       if (isAllReady) navigate(`/answer/${roomId}/${name}`);
-    }, 5000);
+    }, 3000);
 
     return () => {
       clearTimeout(readyTimeOut);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAllReady]);
+
+  useEffect(() => {
+    return () => {
+      setIsAllReady(false);
+      setIsReadyPlayer(false);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="lobby-container">
@@ -203,7 +215,11 @@ const Lobby = ({
             functionality={readyBtnHandler}
             isDisabled={isReady || players?.length < 2}
           >
-            {isReady ? "Waiting for others..." : "Are you Ready?"}
+            {isAllReady
+              ? "Starting Game!"
+              : isReady
+              ? "Waiting for others..."
+              : "Are you Ready?"}
           </CommonButton>
         </div>
       </div>

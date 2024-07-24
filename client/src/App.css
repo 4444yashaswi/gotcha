@@ -443,6 +443,20 @@ input:focus-visible {
   align-content: flex-start;
 }
 
+.waiting--footer-ready-text {
+  background-color: #4793CF;
+  height: 18vh;
+  width: 100vw;
+  box-shadow: 0px -13px 20px 20px rgb(71,147,207, 1);
+  position: absolute;
+  bottom: 0;
+  z-index: 1;
+  text-align: center;
+  color: white;
+  font-size: 2.5vh;
+  font-weight: 400;
+}
+
 .options-container {
   background-color: #3474b4;
   height: 100vh;
@@ -603,7 +617,8 @@ input:focus-visible {
   background-color: #3373B3;
   height: 100vh;
   text-align: center;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .game-winner--winner-stack {

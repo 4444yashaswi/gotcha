@@ -6,9 +6,11 @@ import TruthQuestion from "../Components/TruthComesOutComponents/TruthQuestion";
 import axios from "../Axios/Axios";
 import { useParams } from "react-router-dom";
 import Loader from "../Components/UI/Loader";
+// import CONSTANTS from "../Constants/Constants";
 
 const Answer = ({ setSubmitted }) => {
   const textAreaRef = useRef();
+  // const { SUBMIT_STATUS } = CONSTANTS;
   const { roomId, name } = useParams();
 
   // const question = "If OJ became famous overnight, it would be for";
@@ -71,6 +73,20 @@ const Answer = ({ setSubmitted }) => {
     });
   };
 
+  // const getPlayerList = async () => {
+  //   const players = await axios.get(
+  //     `/roomManagement/userList?roomId=${roomId}&userName=${name}&flag=${SUBMIT_STATUS}`
+  //   );
+  //   console.log(players);
+  //   setPlayerList(
+  //     players?.data?.userList?.map((player) => ({
+  //       name: player?.name,
+  //       avatarColor: player?.avatarColour,
+  //       ready: player?.status,
+  //     }))
+  //   );
+  // };
+
   const getQuestion = async () => {
     setIsLoading(true);
     const questionDetails = await axios.get(
@@ -81,7 +97,10 @@ const Answer = ({ setSubmitted }) => {
   };
 
   useEffect(() => {
-    if (roomId && name) getQuestion();
+    if (roomId && name) {
+      getQuestion();
+      // getPlayerList();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

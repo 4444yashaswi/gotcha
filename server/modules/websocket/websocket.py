@@ -5,9 +5,9 @@ import logging
 from typing import List, Dict
 
 from config.config import Constants
-from config.config import settings
+from config.config import settings, SocketModel
 from config.database import get_db
-from config.common_function import room_user_validation, room_admin_validation, get_user, remove_user
+from config.common_function import room_user_validation, room_admin_validation, get_user, remove_user, update_user_room_status
 from config import models
 from . import schemas
  
@@ -41,7 +41,7 @@ async def websocket_listen(room_id: str, user_name: str, websocket: WebSocket):
     response = {
         "flag": "JOIN",
         "userName": user["name"],
-        "avatarColour": user["avatarColor"],
+        "avatarColour": user["avatarColour"],
         "isAll": False
     }
     await publish_message(event=room_id, message=response)
@@ -51,7 +51,16 @@ async def websocket_listen(room_id: str, user_name: str, websocket: WebSocket):
         while True:
             message = await websocket.receive_json()
             print(f"Received message from client: {message}")
-            await publish_message(event=room_id, message=message)
+            room_validation = await room_user_validation(room_id=room_id, user_name=user_name, db= db)
+            socket_response = await update_user_room_status(
+                user_data=SocketModel(
+                    roomId= room_id,
+                    userName= user_name,
+                    avatarColour= message["avatarColour"],
+                    flag= message["flag"],
+                    isAll= False
+                ), room= room_validation, db= db)
+            await publish_message(event=room_id, message=socket_response.model_dump())
     except Exception as e:
         logger.error(f"Error in web socket: {str(e)}")
         # removing user

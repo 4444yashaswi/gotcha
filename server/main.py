@@ -19,8 +19,8 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    # allow_origins=["https://frontend-deployment.io", "http://localhost"],
+    # allow_origins=["*"],
+    allow_origins=["https://gotcha-frontend.vercel.app", "http://localhost", "*"],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
