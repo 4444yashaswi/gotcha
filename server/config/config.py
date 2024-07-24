@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from typing import List, Dict, Literal
+from typing import List, Dict, Literal, Optional
 from fastapi import WebSocket
 
 class DevelopmentSettings(BaseSettings):
@@ -44,18 +44,20 @@ class Constants:
 
     NEXT_ROOM_STATUS_MAPPING = {
         "Lobby": "Submit",
-        "Submit": "Selecct",
-        "Select": "Score",
-        "Score": ""
+        "Ready": "Submit",
+        "Submit": "Select",
+        "Select": "Ready"
     }
 
     ROOM_STATUS_LOBBY = "Lobby"
     ROOM_STATUS_SUBMIT = "Submit"
     ROOM_STATUS_SELECT = "Select"
-    ROOM_STATUS_SCORE = "Score"
+    # ROOM_STATUS_SCORE = "Score"
 
 
 class SocketModel(BaseModel):
     roomId: str
     userName: str
-    status: Literal["Submit", "Select", "Ready", "Lobby"]
+    avatarColour: str
+    flag: Literal["SUBMIT", "SELECT", "READY", "LOBBY", "JOIN", "LEAVE"]
+    isAll: Optional[bool] = False
