@@ -7,7 +7,7 @@ from typing import List, Dict
 from config.config import Constants
 from config.config import settings, SocketModel
 from config.database import get_db
-from config.common_function import room_user_validation, room_admin_validation, get_user, remove_user, update_user_room_status
+from config.common_function import room_user_validation, room_admin_validation, get_user, remove_user, update_user_room_status, check_room_status
 from config import models
 from . import schemas
  
@@ -69,6 +69,9 @@ async def websocket_listen(room_id: str, user_name: str, websocket: WebSocket):
         # Inform all existing room users
         response["flag"] = "LEAVE"
         await publish_message(event=room_id, message=response)
+        user_data = await check_room_status(room_id= room_id, db= db)
+        if user_data:
+            await publish_message(event=room_id, message=user_data.model_dump())
         # Cleaning
         await clean_rooms()
 
