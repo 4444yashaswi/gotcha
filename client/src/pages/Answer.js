@@ -6,6 +6,7 @@ import TruthQuestion from "../Components/TruthComesOutComponents/TruthQuestion";
 import axios from "../Axios/Axios";
 import { useParams } from "react-router-dom";
 import Loader from "../Components/UI/Loader";
+import Notify from "../Components/UI/Notify";
 // import CONSTANTS from "../Constants/Constants";
 
 const Answer = ({ setSubmitted }) => {
@@ -29,6 +30,7 @@ const Answer = ({ setSubmitted }) => {
   ]);
   const [isDisabled, setIsDisabled] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [notification, setNotification] = useState();
 
   const setCaretPosition = (el, position) => {
     const range = document.createRange();
@@ -63,14 +65,21 @@ const Answer = ({ setSubmitted }) => {
       userName: name,
       answer,
     };
-    const submitAnswer = await axios.post("/triviaManagement/submitAnswer", {
-      ...submitAnswerPayload,
-    });
-    setIsLoading((loading) => {
-      console.log(submitAnswer);
-      setSubmitted(true);
-      return false;
-    });
+    try {
+      const submitAnswer = await axios.post("/triviaManagement/submitAnswer", {
+        ...submitAnswerPayload,
+      });
+      setIsLoading((loading) => {
+        console.log(submitAnswer);
+        setSubmitted(true);
+        return false;
+      });
+    } catch (err) {
+      if (err?.response?.status === 409) {
+        setNotification(err?.response?.data?.detail);
+        setIsLoading(false);
+      } else setNotification("Oops! Something went wrong.");
+    }
   };
 
   // const getPlayerList = async () => {
@@ -89,11 +98,15 @@ const Answer = ({ setSubmitted }) => {
 
   const getQuestion = async () => {
     setIsLoading(true);
-    const questionDetails = await axios.get(
-      `/triviaManagement/getQuestion?roomId=${roomId}&userName=${name}`
-    );
-    setQuestion(questionDetails?.data?.trivia);
-    setDependentPlayers(questionDetails?.data?.associated_users);
+    try {
+      const questionDetails = await axios.get(
+        `/triviaManagement/getQuestion?roomId=${roomId}&userName=${name}`
+      );
+      setQuestion(questionDetails?.data?.trivia);
+      setDependentPlayers(questionDetails?.data?.associated_users);
+    } catch (err) {
+      setNotification("Oops! Something went wrong.");
+    }
   };
 
   useEffect(() => {
@@ -111,6 +124,7 @@ const Answer = ({ setSubmitted }) => {
   return (
     <div className="answer-container">
       {isLoading && <Loader />}
+      <Notify notification={notification} setNotification={setNotification} />
       <TruthHeader>The Truth Comes Out Teaser</TruthHeader>
       <TruthQuestion question={question} dependentPlayers={depententPlayers} />
       <div className="answer-input--container">

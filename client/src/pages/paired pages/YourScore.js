@@ -4,6 +4,7 @@ import Scores from "../Scores";
 import axios from "../../Axios/Axios";
 import Loader from "../../Components/UI/Loader";
 import { useParams } from "react-router-dom";
+import Notify from "../../Components/UI/Notify";
 
 const YourScore = ({
   setSendInformation,
@@ -16,6 +17,7 @@ const YourScore = ({
 
   const [isCheckingScores, setIsCheckingScores] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [notification, setNotification] = useState();
 
   const [playersSelectedYourAnswer, setaPlayersSelectedYourAnswer] = useState(
     []
@@ -28,27 +30,31 @@ const YourScore = ({
   const [totalRounds, setTotalRounds] = useState("");
 
   const getRoundScore = async () => {
-    setIsLoading(true);
-    const scoreDetails = await axios.get(
-      `/triviaManagement/roundScore?roomId=${roomId}&userName=${name}`
-    );
-    console.log(scoreDetails);
-    setaPlayersSelectedYourAnswer(scoreDetails?.data?.answerPickedBy);
-    setAllAnswers(scoreDetails?.data?.answerList);
-    const scores = scoreDetails?.data?.totalScore?.sort(
-      (player1, player2) => player2.score - player1.score
-    );
-    setRoundScores(scores);
-    setLeaders(() => {
-      let leaders = [scores?.[0]];
-      for (let i = 1; i < scores?.length; i++)
-        if (scores?.[0]?.score === scores?.[i]?.score)
-          leaders = [...leaders, scores?.[i]];
-      return leaders;
-    });
-    setYouSelected(scoreDetails?.data?.answerPicked);
-    setRound(scoreDetails?.data?.round);
-    setTotalRounds(scoreDetails?.data?.totalRounds);
+    try {
+      setIsLoading(true);
+      const scoreDetails = await axios.get(
+        `/triviaManagement/roundScore?roomId=${roomId}&userName=${name}`
+      );
+      console.log(scoreDetails);
+      setaPlayersSelectedYourAnswer(scoreDetails?.data?.answerPickedBy);
+      setAllAnswers(scoreDetails?.data?.answerList);
+      const scores = scoreDetails?.data?.totalScore?.sort(
+        (player1, player2) => player2.score - player1.score
+      );
+      setRoundScores(scores);
+      setLeaders(() => {
+        let leaders = [scores?.[0]];
+        for (let i = 1; i < scores?.length; i++)
+          if (scores?.[0]?.score === scores?.[i]?.score)
+            leaders = [...leaders, scores?.[i]];
+        return leaders;
+      });
+      setYouSelected(scoreDetails?.data?.answerPicked);
+      setRound(scoreDetails?.data?.round);
+      setTotalRounds(scoreDetails?.data?.totalRounds);
+    } catch (err) {
+      setNotification("Oops! Something went wrong.");
+    }
   };
 
   useEffect(() => {
@@ -65,6 +71,7 @@ const YourScore = ({
   return (
     <>
       {isLoading && <Loader />}
+      <Notify notification={notification} setNotification={setNotification} />
       {isCheckingScores ? (
         <Scores
           playersSelectedYourAnswer={playersSelectedYourAnswer}

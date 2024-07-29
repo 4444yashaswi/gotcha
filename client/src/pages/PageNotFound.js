@@ -4,6 +4,7 @@ import CommonButton from "../Components/UI/CommonButton";
 import OptionsDrawer from "../Components/UI/OptionsDrawer";
 import PlayerScoreCard from "../Components/UI/PlayerDetails/PlayerScoreCard";
 import Countdown from "../Components/UI/Countdown";
+import Notify from "../Components/UI/Notify";
 // import PlayerCard from "../Components/UI/PlayerCard";
 // import Modal from "../Components/UI/Modal";
 // import Loader from "../Components/UI/Loader";
@@ -18,6 +19,7 @@ const PageNotFound = () => {
   // const functonality = () => {console.log("execute the functiona;ity")};
 
   const [inputVal, setInputVal] = useState("");
+  const [notification, setNotification] = useState();
 
   const LIMIT = 50;
 
@@ -26,8 +28,15 @@ const PageNotFound = () => {
     setInputVal(target.value);
   };
 
+  const getBaseUrl = () => {
+    const { protocol, hostname, port } = window.location;
+    console.log(`${protocol}//${hostname}${port ? `:${port}` : ''}`);
+  };
+  
+
   return (
-    <div style={{ position: "relative" }}>
+    <div style={{ position: "relative", minHeight: "100vh" }}>
+      <Notify notification={notification} setNotification={setNotification}/>
       {isDrawerOpen && <OptionsDrawer closeDrawer={closeDrawerHandler}/>}
       {/* <Modal title="Are you sure you want to leave the game?" onClose={onClose} functionality={functonality}/>
        */}
@@ -49,7 +58,7 @@ const PageNotFound = () => {
       
       <PlayerScoreCard name="Ohm" avatarColor="orange" isReady={true} score={5} />
 
-      <div style={{display: "flex", justifyContent: "center", textAlign: "center  "}}><CommonButton isPrimary >page not Found</CommonButton></div>
+      <div style={{display: "flex", justifyContent: "center", textAlign: "center  "}}><CommonButton isPrimary functionality={()=>{getBaseUrl()}} >page not Found</CommonButton></div>
     </div>
   );
 };

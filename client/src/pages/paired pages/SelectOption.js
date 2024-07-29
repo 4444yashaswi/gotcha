@@ -4,6 +4,7 @@ import SelectSubmit from "../SelectSubmit";
 import { useNavigate, useParams } from "react-router-dom";
 import CONSTANTS from "../../Constants/Constants";
 import axios from "../../Axios/Axios";
+import Notify from "../../Components/UI/Notify";
 
 const SelectOption = ({
   hasSelectedPlayer,
@@ -18,6 +19,7 @@ const SelectOption = ({
 
   const [hasPlayerSelectedOption, setHasPlayerSelectedOption] = useState(false);
   const [playerList, setPlayerList] = useState([]);
+  const [notification, setNotification] = useState();
 
   // update the player status if they submit an answer
   useEffect(() => {
@@ -46,17 +48,21 @@ const SelectOption = ({
 
   // get the list of players present in the room
   const getPlayerList = async () => {
-    const players = await axios.get(
-      `/roomManagement/userList?roomId=${roomId}&userName=${name}&flag=${SELECT_STATUS}`
-    );
-    console.log(players);
-    setPlayerList(
-      players?.data?.userList?.map((player) => ({
-        name: player?.name,
-        avatarColor: player?.avatarColour,
-        ready: player?.status,
-      }))
-    );
+    try {
+      const players = await axios.get(
+        `/roomManagement/userList?roomId=${roomId}&userName=${name}&flag=${SELECT_STATUS}`
+      );
+      console.log(players);
+      setPlayerList(
+        players?.data?.userList?.map((player) => ({
+          name: player?.name,
+          avatarColor: player?.avatarColour,
+          ready: player?.status,
+        }))
+      );
+    } catch (err) {
+      setNotification("Oops! Something went wrong.");
+    }
   };
 
   useEffect(() => {
@@ -65,12 +71,13 @@ const SelectOption = ({
     return () => {
       setHasSelectedPlayer(false);
       setHaveAllSelected(false);
-    }
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <>
+      <Notify notification={notification} setNotification={setNotification} />
       {hasPlayerSelectedOption ? (
         <SelectSubmit nextScreen="/scores" playerList={playerList} />
       ) : (

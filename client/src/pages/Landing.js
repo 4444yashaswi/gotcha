@@ -4,6 +4,7 @@ import CommonButton from "../Components/UI/CommonButton";
 import DetailsForm from "../Components/DetailsForm/DetailsForm";
 import axios from "../Axios/Axios";
 import Loader from "../Components/UI/Loader";
+import Notify from "../Components/UI/Notify";
 
 const Landing = ({ setJoinGame }) => {
   const { joinRoom } = useParams();
@@ -11,6 +12,7 @@ const Landing = ({ setJoinGame }) => {
   const [avatarInitial, setAvatarInitial] = useState("");
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [notification, setNotification] = useState();
   const [roomDetails, setRoomDetails] = useState();
   const [bgColor, setBgColor] = useState("aqua");
   const [isAdmin, setIsAdmin] = useState();
@@ -35,10 +37,14 @@ const Landing = ({ setJoinGame }) => {
       avatarColour: bgColor,
       roomId: joinRoom.toLowerCase(),
     };
-    const getRoomDetails = await axios.post("/roomManagement/joinRoom", {
-      ...joinRoomBody,
-    });
-    setRoomDetails(getRoomDetails);
+    try {
+      const getRoomDetails = await axios.post("/roomManagement/joinRoom", {
+        ...joinRoomBody,
+      });
+      setRoomDetails(getRoomDetails);
+    } catch (err) {
+      setNotification("Oops! Something went wrong.");
+    }
   };
 
   const startNewRoom = async () => {
@@ -48,10 +54,14 @@ const Landing = ({ setJoinGame }) => {
       avatarColour: bgColor,
       rounds: 5,
     };
-    const getRoomDetails = await axios.post("/roomManagement/createRoom", {
-      ...newRoomBody,
-    });
-    setRoomDetails(getRoomDetails);
+    try {
+      const getRoomDetails = await axios.post("/roomManagement/createRoom", {
+        ...newRoomBody,
+      });
+      setRoomDetails(getRoomDetails);
+    } catch (err) {
+      setNotification("Oops! Something went wrong.");
+    }
   };
 
   const joinGameHandler = () => {
@@ -101,12 +111,13 @@ const Landing = ({ setJoinGame }) => {
     return () => {
       setRoomDetails(null);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <div className="landing-page--container">
       {isLoading && <Loader />}
+      <Notify notification={notification} setNotification={setNotification} />
       <div className="landing-page--bg-container" />'
       <div className="landing-page--body-container">
         <div className="landing-page--header">GOTCHA!</div>

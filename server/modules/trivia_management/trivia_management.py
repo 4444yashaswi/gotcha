@@ -113,7 +113,7 @@ async def submit_answer(request: Request, answer_data: schemas.AnswerData):
         # Check for duplicate answers
         for existing_user in room["user_list"]:
             if existing_user.get("answer") and existing_user["answer"] == answer:
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Duplicate answer found")
+                raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Duplicate answer found")
 
         # Update the answer for the specific user
         room_db.update_one(

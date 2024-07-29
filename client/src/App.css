@@ -466,10 +466,12 @@ input:focus-visible {
 .options-options--container {
   background-color: white;
   border-radius: 30px;
-  height: 100%;
-  padding: 1vh 1vh 0 1vh;
+  height: 80vh;
+  padding: 1vh 1vh 10vh 1vh;
   box-sizing: border-box;
   position: relative;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .options-options--heading {

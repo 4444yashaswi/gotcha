@@ -46,6 +46,23 @@ async def get_user(room_id, user_name, db):
             }
     return user_obj
 
+# Function to check if all ready for the room
+async def check_room_status(room_id, db):
+    room_db = db["rooms"]
+
+    room = room_db.find_one({"id": room_id})
+    
+    if not room:
+        return False
+
+    user_data = SocketModel(
+        roomId= room_id,
+        userName= "",
+        avatarColour= "",
+        flag= room["room_status"].upper()
+    )
+    return await update_user_room_status(user_data= user_data, room=room, db= db)
+
 # Function to delete user from room if disconnected
 async def remove_user(room_id, user_name, db):
     room_db = db["rooms"]
@@ -80,7 +97,7 @@ async def update_user_room_status(user_data: SocketModel, room, db):
     status_count = 0
 
     for user in room["user_list"]:
-        if user["name"] == user_data.userName:
+        if user_data.userName != "" and user["name"] == user_data.userName:
             room_db.update_one(
                 {"id": user_data.roomId, "user_list.name": user["name"]},
                 {"$set": {f"user_list.$.{Constants.USER_STATUS_FLAG_MAPPING[user_data.flag.capitalize()]}": True}}
