@@ -1,0 +1,29 @@
+.notify--container {
+    position: absolute;
+    width: 100%;
+    bottom: 15vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* background-color: red; */
+    z-index: 12;
+}
+
+.notify--background {
+    animation: fadeInOut 2s forwards;
+    padding: 10px 30px;
+    background-color: black;
+    color: white;
+    font-weight: 500;
+    max-width: 80vw;
+    border-radius: 40px;
+}
+
+@keyframes fadeInOut {
+    0%, 100% {
+        opacity: 0%; /* Initial and final opcaity */
+    }
+    50% {
+        opacity: 80%; /* Fully visible opcaity */
+    }
+}

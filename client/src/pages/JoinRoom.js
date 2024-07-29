@@ -5,9 +5,10 @@ import CommonButton from "../Components/UI/CommonButton";
 import axios from "../Axios/Axios";
 import Loader from "../Components/UI/Loader";
 import Modal from "../Components/UI/Modal";
+import Notify from "../Components/UI/Notify";
 
 const JoinRoom = () => {
-    const inputRoom = useRef();
+  const inputRoom = useRef();
 
   const navigate = useNavigate();
   const { name, avatarColor } = useParams();
@@ -17,6 +18,7 @@ const JoinRoom = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [notification, setNotification] = useState();
 
   const [roomId, setRoomId] = useState("");
   const [roomIdArr, setRoomIdArr] = useState([
@@ -40,7 +42,7 @@ const JoinRoom = () => {
   };
 
   const roomIdChangeHandler = (event) => {
-    const updatedValue = event.target.value;
+    const updatedValue = event.target.value.toLowerCase();
     if (updatedValue.length > 8 && roomId.length >= 8) {
       event.preventDefault();
     } else {
@@ -67,10 +69,14 @@ const JoinRoom = () => {
       avatarColour: avatarColor,
       roomId: sendRoomId.toLowerCase(),
     };
-    const getRoomDetails = await axios.post("/roomManagement/joinRoom", {
-      ...joinRoomBody,
-    });
-    setRoomDetails(getRoomDetails);
+    try {
+      const getRoomDetails = await axios.post("/roomManagement/joinRoom", {
+        ...joinRoomBody,
+      });
+      setRoomDetails(getRoomDetails);
+    } catch (err) {
+      setNotification("Oops! Something went wrong.");
+    }
   };
 
   const backClickHandler = () => {
@@ -94,9 +100,14 @@ const JoinRoom = () => {
     if (roomDetails) {
       setIsLoading(false);
       const existingPlayers = roomDetails?.data?.playersList || [];
-      const params = new URLSearchParams({ roomId: roomDetails?.data?.roomId, userName: name });
+      const params = new URLSearchParams({
+        roomId: roomDetails?.data?.roomId,
+        userName: name,
+      });
       navigate(
-        `/lobby/${roomDetails?.data?.roomId}/${name}/${avatarColor}/false?${params.toString()}`,
+        `/lobby/${
+          roomDetails?.data?.roomId
+        }/${name}/${avatarColor}/false?${params.toString()}`,
         { state: existingPlayers }
       );
     }
@@ -121,6 +132,7 @@ const JoinRoom = () => {
           functionality={backButtonFunctionality}
         />
       )}
+      <Notify notification={notification} setNotification={setNotification} />
       <div className="join-background" />
       <div className="join-header">
         <div className="join-header--back-button" onClick={backClickHandler}>

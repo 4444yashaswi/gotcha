@@ -7,6 +7,7 @@ import axios from "../Axios/Axios";
 import { IoIosArrowBack } from "react-icons/io";
 import RoomCode from "../Components/UI/RoomCode";
 import CONSTANTS from "../Constants/Constants";
+import Notify from "../Components/UI/Notify";
 
 const Lobby = ({
   setJoinGame,
@@ -36,6 +37,7 @@ const Lobby = ({
 
   const [noOfRounds, setNoOfRounds] = useState("5");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [notification, setNotification] = useState();
   const [isReady, setIsReady] = useState(false);
   // const [isAllReady, setIsAllReady] = useState(false); Should get from App.js
   const [players, setPlayers] = useState([]);
@@ -63,10 +65,14 @@ const Lobby = ({
       userName: name,
       rounds: round,
     };
-    const updatedRounds = await axios.put("/roomManagement/updateRounds", {
-      ...updateRoundsPayload,
-    });
-    console.log(updatedRounds);
+    try {
+      const updatedRounds = await axios.put("/roomManagement/updateRounds", {
+        ...updateRoundsPayload,
+      });
+      console.log(updatedRounds);
+    } catch (err) {
+      setNotification("Oops! Something went wrong.");
+    }
   };
 
   const backButtonFunctionality = () => {
@@ -145,8 +151,8 @@ const Lobby = ({
     return () => {
       setIsAllReady(false);
       setIsReadyPlayer(false);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -158,6 +164,7 @@ const Lobby = ({
           functionality={backButtonFunctionality}
         />
       )}
+      <Notify notification={notification} setNotification={setNotification} />
       <div className="lobby-background" />
       <div className="lobby-header">
         <div className="lobby-header--back-button" onClick={backClickHandler}>

@@ -11,10 +11,24 @@ import GameResult from "./pages/paired pages/GameResult";
 import { useEffect, useState } from "react";
 import SocketConfig from "./GameConfig/SocketConfig";
 import axios from "./Axios/Axios";
+import CONSTANTS from "./Constants/Constants";
+import Notify from "./Components/UI/Notify";
 
 function App() {
-  const [redirectToLanding, setRedirectToLanding] = useState(false);
+  const {
+    LANDING,
+    JOINROOM,
+    LOBBY,
+    SUBMITANSWER,
+    SELECTOPTION,
+    YOURSCORE,
+    GAMERESULT,
+    PAGENOTFOUND,
+  } = CONSTANTS;
+
+  const [redirectToLanding, setRedirectToLanding] = useState();
   const [joinGame, setJoinGame] = useState(null);
+  const [notification, setNotification] = useState();
 
   // Socket Response States
   const [joinedRoomPlayer, setJoinedRoomPlayer] = useState(null);
@@ -58,7 +72,7 @@ function App() {
   };
 
   useEffect(() => {
-    navigate("/landing");
+    if (typeof redirectToLanding === "boolean") navigate(`${LANDING}`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [redirectToLanding]);
 
@@ -69,6 +83,7 @@ function App() {
       console.log(response);
     } catch (err) {
       console.log("Server Down\n", err);
+      setNotification("Oops! Something went wrong.");
     }
   };
 
@@ -85,21 +100,22 @@ function App() {
         sendInformation={sendInformation}
         setSendInformation={setSendInformation}
       />
+      <Notify notification={notification} setNotification={setNotification}/>
       <Routes>
         <Route exact path="/" element={<Landing setJoinGame={setJoinGame} />} />
         <Route
           exact
-          path="/landing/:joinRoom?"
+          path={`${LANDING}/:joinRoom?`}
           element={<Landing setJoinGame={setJoinGame} />}
         />
         <Route
           exact
-          path="/join-room/:name/:avatarColor"
+          path={`${JOINROOM}/:name/:avatarColor`}
           element={<JoinRoom />}
         />
         <Route
           exact
-          path="/lobby/:roomId/:name/:avatarColor/:isAdmin"
+          path={`${LOBBY}/:roomId/:name/:avatarColor/:isAdmin`}
           element={
             <Lobby
               setJoinGame={setJoinGame}
@@ -115,7 +131,7 @@ function App() {
         />
         <Route
           exact
-          path="/answer/:roomId/:name"
+          path={`${SUBMITANSWER}/:roomId/:name`}
           element={
             <SubmitAnswer
               hasSubmittedPlayer={hasSubmittedPlayer}
@@ -127,7 +143,7 @@ function App() {
         />
         <Route
           exact
-          path="/select-option/:roomId/:name"
+          path={`${SELECTOPTION}/:roomId/:name`}
           element={
             <SelectOption
               hasSelectedPlayer={hasSelectedPlayer}
@@ -139,7 +155,7 @@ function App() {
         />
         <Route
           exact
-          path="/scores/:roomId/:name"
+          path={`${YOURSCORE}/:roomId/:name`}
           element={
             <YourScore
               setSendInformation={setSendInformation}
@@ -150,8 +166,8 @@ function App() {
             />
           }
         />
-        <Route exact path="/result" element={<GameResult />} />
-        <Route exact path="*" element={<PageNotFound />} />
+        <Route exact path={`${GAMERESULT}`} element={<GameResult />} />
+        <Route exact path={`${PAGENOTFOUND}`} element={<PageNotFound />} />
         {/* <Route exact path="*" element={<GameConfig/>} /> */}
       </Routes>
     </div>
